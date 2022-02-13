@@ -1,0 +1,25 @@
+.heading {
+    font-size: 48px;
+    line-height: 57px;
+    color: #000000;
+}
+
+.sub_heading {
+    font-size: 24px;
+    line-height: 28px;
+}
+
+.font_settings {
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: normal;
+}
+
+.button_settings {
+    text-align: center;
+    width: 464px;
+    height: 110px;
+    background: #6B6C66;
+    font-size: 48px;
+    color: whitesmoke;
+}

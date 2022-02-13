@@ -22,11 +22,12 @@ export class QuestionService {
 
   chronicuser = false
   signOfHepaticfailure = false
-  durationofexposure = false
+  durationofexposure = true
+  checkTemp = false
   constructor() { }
 
   getQuestion(answer: any) {
-    console.log(this.count, answer)
+    console.log(this.count, answer, this.chronicuser, this.durationofexposure, this.signOfHepaticfailure)
     if (this.chronicuser == false && this.durationofexposure == true && this.signOfHepaticfailure == false) {
       if (this.count == null && answer == 0) {
         this.count = "Is the duration of acetaminophen ingestion is known ?"
@@ -872,12 +873,79 @@ export class QuestionService {
       }
     }
     else if (this.chronicuser == true && this.durationofexposure == false && this.signOfHepaticfailure == false) {
-      if (this.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && answer == "yes") {
-        this.count = "Is the duration of acetaminophen ingestion is known ?"
+      if (this.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && this.checkTemp == false) {
+        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.checkTemp = true
         return {
-          question: "Is the duration of acetaminophen ingestion is known ?",
+          question: "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?",
           type: 'checkbox',
           answer: ['yes', 'no']
+        }
+      }
+      if (this.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && answer == "yes") {
+        this.count = "Is the exact daily dose known?"
+        return {
+          question: "Is the exact daily dose known?",
+          type: 'checkbox',
+          answer: ['yes', 'no']
+        }
+      }
+      else if (this.count == "Is the exact daily dose known?" && answer == "yes") {
+        this.count = "how many miligrams of acetaminophen is ingested daily?"
+        return {
+          question: "how many miligrams of acetaminophen is ingested daily?",
+          type: 'input',
+        }
+      }
+      else if (this.count == "how many miligrams of acetaminophen is ingested daily?" && answer == "yes") {
+        this.count = "how many miligrams of acetaminophen is ingested daily?"
+        if (answer <= 4000) {
+          this.count = "Is there any signs of hepatic failure?"
+          this.chronicuser = false
+          this.signOfHepaticfailure = true
+          this.durationofexposure = false
+          return {
+            question: "No further treatment and no NAC",
+            type: 'empty',
+          }
+        }
+        else {
+          this.count = "Does the patient have any of these signs: nausea/vomiting/abdominal pain?"
+          return {
+            question: "Does the patient have any of these signs: nausea/vomiting/abdominal pain?",
+            type: 'checkbox',
+            answer: ['yes', 'no']
+          }
+        }
+      }
+      else if (this.count == "Does the patient have any of these signs: nausea/vomiting/abdominal pain?" && answer == "no") {
+        this.count = "Is there any signs of hepatic failure?"
+        this.chronicuser = false
+        this.signOfHepaticfailure = true
+        this.durationofexposure = false
+        return {
+          question: "No further treatment and no NAC",
+          type: 'empty',
+        }
+      }
+      else if (this.count == "Does the patient have any of these signs: nausea/vomiting/abdominal pain?" && answer == "yes") {
+        this.count = "Is there any signs of hepatic failure?"
+        this.chronicuser = false
+        this.signOfHepaticfailure = true
+        this.durationofexposure = false
+        return {
+          question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+          type: 'empty',
+        }
+      }
+      else if (this.count == "Is the exact daily dose known?" && answer == "no") {
+        this.count = "Is there any signs of hepatic failure?"
+        this.chronicuser = false
+        this.signOfHepaticfailure = true
+        this.durationofexposure = false
+        return {
+          question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+          type: 'empty',
         }
       }
       else if (this.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && answer == "no") {
@@ -895,6 +963,14 @@ export class QuestionService {
       }
     }
     else if (this.chronicuser == false && this.durationofexposure == false && this.signOfHepaticfailure == true) {
+      if (this.count == "Is there any signs of hepatic failure?" && this.checkTemp == false) {
+        this.count = "Is there any signs of hepatic failure?"
+        return {
+          question: "Is there any signs of hepatic failure?",
+          type: 'checkbox',
+          answer: ['yes', 'no']
+        }
+      }
       if (this.count == "Is there any signs of hepatic failure?" && answer == "yes") {
         this.count = "Is the duration of acetaminophen ingestion is known ?"
         return {

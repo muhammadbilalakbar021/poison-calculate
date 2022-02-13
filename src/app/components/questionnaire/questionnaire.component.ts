@@ -27,7 +27,7 @@ export class QuestionnaireComponent implements OnInit {
       this.checkBox = false
     }
     else if (this.currentQuestion.type == "empty") {
-      this.answer = true
+      this.checkBox = true
     }
 
   }

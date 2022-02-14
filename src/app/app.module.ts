@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { QuestionnaireComponent } from './components/questionnaire/questionnaire.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { AboutComponent } from './components/about/about.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     AppComponent,
     HomepageComponent,
     FooterComponent,
-    QuestionnaireComponent
+    QuestionnaireComponent,
+    AboutComponent,
   ],
   imports: [
     BrowserModule,

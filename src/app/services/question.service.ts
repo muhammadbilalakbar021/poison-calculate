@@ -32,6 +32,16 @@ export class QuestionService {
   durationofexposure = true
   checkTemp = false
   ransomLastCheck = false
+
+  complexCount = 0
+  patientsptvalue: any = null
+  patientsarterialvalue: any;
+  patientsinrvalue: any;
+  patientscreatinevalue: any;
+  patientsencephalopathyvalue: any;
+  patientslactatelevelvalue: any;
+  patientslactatelevelvalue12: any;
+  patientshosphatevalue: any;
   constructor() { }
 
   getQuestion(answer: any) {
@@ -971,6 +981,8 @@ export class QuestionService {
       }
     }
     else if (this.chronicuser == false && this.durationofexposure == false && this.signOfHepaticfailure == true) {
+      console.log("hello from outside 2")
+
       if (this.count == "Is there any signs of hepatic failure?" && this.checkTemp == false) {
         this.count = "Is there any signs of hepatic failure?"
         this.checkTemp = true
@@ -978,6 +990,37 @@ export class QuestionService {
           question: "Is there any signs of hepatic failure?",
           type: 'checkbox',
           answer: ['yes', 'no']
+        }
+      }
+      if (this.complexCount == 8) {
+        console.log("hello from outside 1")
+        console.log(this.measuredPT == "yes", this.patientsptvalue != null)
+        if (this.measuredPT == "yes" && this.patientsptvalue > 100) {
+          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+        }
+        if (this.arterialPh == "yes" && this.patientsarterialvalue < 7.3) {
+          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+        }
+        if (this.measuredInr == "yes" && this.patientsinrvalue > 6.5) {
+          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+        }
+        if (this.measuredCreatinin == "yes" && this.patientscreatinevalue > 3.3) {
+          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+        }
+        if (this.calculatedEncephalopathyGrade == "yes" && this.patientsencephalopathyvalue > 2) {
+          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+        }
+        if (this.measuredLactat4 == "yes" && this.patientslactatelevelvalue > 3.5) {
+          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+        }
+        if (this.measuredLactat12 == "yes" && this.patientslactatelevelvalue12 > 3) {
+          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+        }
+        if (this.measuredPhosphate48to96 == "yes" && this.patientshosphatevalue > 3.75) {
+          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+        }
+        else {
+          alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended")
         }
       }
       if (this.count == "Is there any signs of hepatic failure?" && answer == "yes") {
@@ -1008,11 +1051,14 @@ export class QuestionService {
           }
         }
         else {
+          this.complexCount = this.complexCount + 1
+
           this.count = "Creatinine level is measured ?"
           if (this.measuredInr == "yes") {
+            this.count = "What is INR ?"
             return {
-              question: "In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L",
-              type: 'empty',
+              question: "What is INR ?",
+              type: 'input',
             }
           }
           else {
@@ -1034,11 +1080,14 @@ export class QuestionService {
           }
         }
         else {
+          this.complexCount = this.complexCount + 1
+
           this.count = "INR is measured?"
           if (this.arterialPh == "yes") {
+            this.count = "What is Arterial pH ?"
             return {
-              question: "In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L",
-              type: 'empty',
+              question: "What is Arterial pH ?",
+              type: 'input',
             }
           }
           else {
@@ -1060,11 +1109,14 @@ export class QuestionService {
           }
         }
         else {
+          this.complexCount = this.complexCount + 1
+
           this.count = "Encephalopathy Grade is evaluated?"
-          if (this.arterialPh == "yes") {
+          if (this.measuredCreatinin == "yes") {
+            this.count = "What is creatinine value(mg/dL)?"
             return {
-              question: "In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L",
-              type: 'empty',
+              question: "What is creatinine value(mg/dL)?",
+              type: 'input',
             }
           }
           else {
@@ -1086,11 +1138,14 @@ export class QuestionService {
           }
         }
         else {
+          this.complexCount = this.complexCount + 1
+
           this.count = "4h Lactate level is evaluated?"
-          if (this.arterialPh == "yes") {
+          if (this.calculatedEncephalopathyGrade == "yes") {
+            this.count = "What is the grade of encephalopathy?"
             return {
-              question: "In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L",
-              type: 'empty',
+              question: "What is the grade of encephalopathy?",
+              type: 'input',
             }
           }
           else {
@@ -1112,11 +1167,14 @@ export class QuestionService {
           }
         }
         else {
+          this.complexCount = this.complexCount + 1
+
           this.count = "12h Lactate level is evaluated?"
-          if (this.arterialPh == "yes") {
+          if (this.measuredLactat4 == "yes") {
+            this.count = "What is 4h lactate level (mmol/L) after fluid  resuscitation ?"
             return {
-              question: "In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L",
-              type: 'empty',
+              question: "What is 4h lactate level (mmol/L) after fluid  resuscitation ?",
+              type: 'input',
             }
           }
           else {
@@ -1139,10 +1197,13 @@ export class QuestionService {
         }
         else {
           this.count = "48-96h Phosphate level (mmol/L) is evaluated?"
-          if (this.arterialPh == "yes") {
+          this.complexCount = this.complexCount + 1
+
+          if (this.measuredLactat12 == "yes") {
+            this.count = "What is 12h lactate level (mmol/L) after fluid  resuscitation ?"
             return {
-              question: "In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L",
-              type: 'empty',
+              question: "What is 12h lactate level (mmol/L) after fluid  resuscitation ?",
+              type: 'input',
             }
           }
           else {
@@ -1154,14 +1215,32 @@ export class QuestionService {
         }
       }
       else if (this.count == "48-96h Phosphate level (mmol/L) is evaluated?") {
-        this.measuredPhosphate48to96 = answer
-        this.count = "Arterial pH is measured?"
+        if(answer == 123456){
+          this.complexCount = this.complexCount + 1
+          if (this.measuredPhosphate48to96 == "yes") {
+            this.count = "What is 48-96h Phosphate level (mmol/L) after fluid  resuscitation ?)"
+            return {
+              question: "What is 48-96h Phosphate level (mmol/L) after fluid  resuscitation ?)",
+              type: 'input',
+            }
+          }
+          else {
+            return {
+              question: "Phosphate level measurement at 48-96 hrs. is recommended",
+              type: 'empty',
+            }
+          }
+        }
         if (this.ransomLastCheck == false) {
+          this.measuredPhosphate48to96 = answer
+          this.count = "Arterial pH is measured?"
+          this.complexCount = this.complexCount + 1
           this.ransomLastCheck = true
           if (this.measuredPT == "yes") {
+            this.count = "What is patient's PT ?"
             return {
-              question: "In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L",
-              type: 'empty',
+              question: "What is patient's PT ?",
+              type: 'input',
             }
           }
           else {
@@ -1173,9 +1252,11 @@ export class QuestionService {
         }
         else {
           this.count = "48-96h Phosphate level (mmol/L) is evaluated?"
+          this.complexCount = this.complexCount + 1
+
           if (this.measuredPhosphate48to96 == "yes") {
             return {
-              question: "In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L",
+              question: "What is 48-96h Phosphate level (mmol/L) after fluid  resuscitation ?",
               type: 'empty',
             }
           }
@@ -1186,6 +1267,55 @@ export class QuestionService {
             }
           }
         }
+      }
+      else if (this.count == "What is patient's PT ?") {
+        this.count = "Arterial pH is measured?"
+        this.patientsptvalue = answer
+        let abc: any = this.getQuestion(12)
+        return abc
+      }
+      else if (this.count == "What is Arterial pH ?") {
+        this.count = "INR is measured?"
+        console.log("1227")
+        this.patientsarterialvalue = answer
+        let abc: any = this.getQuestion(12)
+        return abc
+      }
+      else if (this.count == "What is INR ?") {
+        this.count = "Creatinine level is measured ?"
+        this.patientsinrvalue = answer
+        let abc: any = this.getQuestion(12)
+        return abc
+      }
+      else if (this.count == "What is creatinine value(mg/dL)?") {
+        this.count = "Encephalopathy Grade is evaluated?"
+        this.patientscreatinevalue = answer
+        let abc: any = this.getQuestion(12)
+        return abc
+      }
+      else if (this.count == "What is the grade of encephalopathy?") {
+        this.count = "4h Lactate level is evaluated?"
+        this.patientsencephalopathyvalue = answer
+        let abc: any = this.getQuestion(12)
+        return abc
+      }
+      else if (this.count == "What is 4h lactate level (mmol/L) after fluid  resuscitation ?") {
+        this.count = "12h Lactate level is evaluated?"
+        this.patientslactatelevelvalue = answer
+        let abc: any = this.getQuestion(12)
+        return abc
+      }
+      else if (this.count == "What is 12h lactate level (mmol/L) after fluid  resuscitation ?") {
+        this.count = "48-96h Phosphate level (mmol/L) is evaluated?"
+        this.patientslactatelevelvalue12 = answer
+        let abc: any = this.getQuestion(123456)
+        return abc
+      }
+      else if (this.count == "What is 48-96h Phosphate level (mmol/L) after fluid  resuscitation ?)") {
+        // this.count = "12h Lactate level is evaluated?"
+        this.patientshosphatevalue = answer
+        let abc: any = this.getQuestion(12)
+        return abc
       }
 
       else if (this.count == "Is there any signs of hepatic failure?" && answer == "no") {

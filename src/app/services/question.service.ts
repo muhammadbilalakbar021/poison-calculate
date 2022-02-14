@@ -19,6 +19,15 @@ export class QuestionService {
   age: any;
   durationIngestedDose: any
   riskbox: any;
+  arterialPh: any;
+  measuredPT: any;
+  measuredInr: any;
+  measuredCreatinin: any;
+  calculatedEncephalopathyGrade: any;
+  measuredLactat4: any;
+  measuredLactat12: any;
+  measuredPhosphate48to96: any;
+
 
   chronicuser = false
   signOfHepaticfailure = false
@@ -897,7 +906,7 @@ export class QuestionService {
           type: 'input',
         }
       }
-      else if (this.count == "how many miligrams of acetaminophen is ingested daily?" && answer == "yes") {
+      else if (this.count == "how many miligrams of acetaminophen is ingested daily?") {
         this.count = "how many miligrams of acetaminophen is ingested daily?"
         if (answer <= 4000) {
           this.count = "Is there any signs of hepatic failure?"
@@ -972,13 +981,20 @@ export class QuestionService {
         }
       }
       if (this.count == "Is there any signs of hepatic failure?" && answer == "yes") {
-        this.count = "Is the duration of acetaminophen ingestion is known ?"
+        this.count = "PT is measured?"
         return {
-          question: "Is the duration of acetaminophen ingestion is known ?",
+          question: "PT is measured?",
           type: 'checkbox',
           answer: ['yes', 'no']
         }
       }
+      // else if(this.count == "PT is measured?" && answer == "yes") {
+      //   this.count = "What is patient's PT?"
+      //   return {
+      //     question: "What is patient's PT?",
+      //     type: 'input'
+      //   }
+      // }
       else if (this.count == "Is there any signs of hepatic failure?" && answer == "no") {
         console.log(this.count)
         this.count = "Is there any signs of hepatic failure?"
@@ -989,7 +1005,6 @@ export class QuestionService {
           question: "At this time , patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended ",
           type: 'empty',
         }
-
       }
     }
     return {

@@ -71,7 +71,10 @@ export class QuestionService {
         this.Timeofing = true
         this.durationIngestedDose = "acute single ingestion"
         return {
-          question: "Does patient has  any of these criteria: 1. Regular ethanol consumption in excess of 21 units/week in males, 14 units/week in females 2. Regular use of enzyme-inducing drugs (carbamazepine phenytoin, phenobarbitone rifampacin) 3. Conditions causing glutathione depletion (malnutrition, HIV, eating disorders, cystic fibrosis)?",
+          question: `Does patient has any of these criteria: 
+          1. Regular ethanol consumption in excess of 21 units/week in males, 14 units/week in females 
+          2. Regular use of enzyme-inducing drugs (carbamazepine phenytoin, phenobarbitone rifampacin) 
+          3. Conditions causing glutathione depletion (malnutrition, HIV, eating disorders, cystic fibrosis)?`,
           type: 'checkbox',
           answer: ['yes', 'no']
         }

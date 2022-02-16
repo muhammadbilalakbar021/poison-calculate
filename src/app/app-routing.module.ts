@@ -9,6 +9,9 @@ const routes: Routes = [
     path: '', component: HomepageComponent
   },
   {
+    path: 'home', component: HomepageComponent
+  },
+  {
     path: 'questionanaire', component: QuestionnaireComponent
   },
   {

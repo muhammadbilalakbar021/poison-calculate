@@ -710,13 +710,13 @@ export class QuestionService {
         this.signOfHepaticfailure = false
         if (this.ingested_dose < 10000 || this.ingested_dose / this.weight < 200) {
           return {
-            question: "No further treatment and no NAC",
+            question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
           }
         }
         else {
           return {
-            question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+            question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
             type: 'empty',
           }
         }
@@ -728,7 +728,7 @@ export class QuestionService {
         this.signOfHepaticfailure = false
 
         return {
-          question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+          question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }
@@ -764,13 +764,13 @@ export class QuestionService {
         this.signOfHepaticfailure = false
         if (this.ingested_dose < 12000 || this.ingested_dose / this.weight < 300) {
           return {
-            question: "No further treatment and no NAC",
+            question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
           }
         }
         else {
           return {
-            question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+            question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
             type: 'empty',
           }
         }
@@ -782,7 +782,7 @@ export class QuestionService {
         this.signOfHepaticfailure = false
 
         return {
-          question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+          question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }
@@ -818,7 +818,7 @@ export class QuestionService {
         this.signOfHepaticfailure = false
         if (this.ingested_dose <= 4000) {
           return {
-            question: "No further treatment and no NAC",
+            question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
           }
         }
@@ -837,7 +837,7 @@ export class QuestionService {
         this.durationofexposure = false
         this.signOfHepaticfailure = false
         return {
-          question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+          question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }
@@ -847,7 +847,7 @@ export class QuestionService {
         this.durationofexposure = false
         this.signOfHepaticfailure = false
         return {
-          question: "No further treatment and no NAC",
+          question: "No further treatment is required and no NAC is needed.",
           type: 'empty',
         }
       }
@@ -946,7 +946,7 @@ export class QuestionService {
         this.durationofexposure = false
         this.signOfHepaticfailure = false
         return {
-          question: "No further treatment and no NAC",
+          question: "No further treatment is required and no NAC is needed.",
           type: 'empty',
         }
       }
@@ -984,7 +984,7 @@ export class QuestionService {
           this.signOfHepaticfailure = true
           this.durationofexposure = false
           return {
-            question: "No further treatment and no NAC",
+            question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
           }
         }
@@ -1003,7 +1003,7 @@ export class QuestionService {
         this.signOfHepaticfailure = true
         this.durationofexposure = false
         return {
-          question: "No further treatment and no NAC",
+          question: "No further treatment is required and no NAC is needed.",
           type: 'empty',
         }
       }
@@ -1013,7 +1013,7 @@ export class QuestionService {
         this.signOfHepaticfailure = true
         this.durationofexposure = false
         return {
-          question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+          question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }
@@ -1023,7 +1023,7 @@ export class QuestionService {
         this.signOfHepaticfailure = true
         this.durationofexposure = false
         return {
-          question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+          question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }

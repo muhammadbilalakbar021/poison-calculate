@@ -1,32 +1,39 @@
 <a type="button" href="questionanaire" style="float: right;" class="btn btn-outline-primary">Start Again</a>
 <div class="container">
-    <div style="padding-top: 10%;">
-        <h2>This calculator is based on the Rumack and Matthew study. Treatment thresholds are estimated to be 25% below the toxic drug level.</h2>
-    </div>
-    <!-- <div class="text-start mt-5">
+  <div style="padding-top: 10%;">
+    <h2>This calculator is based on the Rumack and Matthew study. Treatment thresholds are estimated to be 25% below the
+      toxic drug level.</h2>
+
+  </div>
+  <!-- <div class="text-start mt-5">
       <button class="btn button ml-0" routerLink="/" type="button" style="float: left">Start Again</button>
     </div> -->
-    <div style="padding-top: 10%;" class="ml-0">
-        <h4 class="fw-bold text-center mt-3"></h4>
-        <form class=" bg-white " *ngIf="checkBox">
-            <h3 class="fw-bold">{{currentQuestion.question}}</h3>
-            <div class="form-check mb-2" *ngFor='let questionAnsers of currentQuestion.answer'>
-                <input class="form-check-input" type="radio" name="exampleForm" id="radioExample1" (click)=saveAnswer(questionAnsers)/>
-                <label class="form-check-label" for="radioExample1">
-              {{ questionAnsers | titlecase}}
-            </label>
-            </div>
-            <div class="text-end">
-                <button type="button" style="float: right;" class="btn btn-primary" (click)="onNext()">Next</button>
-            </div>
-        </form>
-        <form class=" bg-white" *ngIf="!checkBox">
-            <h3 class="fw-bold">{{currentQuestion.question}}</h3>
-            <div class="form-check mb-2">
-              <input class="form-check-input" type="text" name="exampleForm" id="radioExample1" #answer/>
-              <button type="button" style="float: right;" class="btn btn-primary" (click)="saveAnswer(answer.value); onNext()">Submit</button>
-            </div>
-          </form>
-        </div>
+  <div *ngIf="ended" style="padding-top: 10%;" class="ml-0">
+    <h4 class="fw-bold text-center mt-3"></h4>
+    <form class=" bg-white " *ngIf="checkBox">
+      <h3 class="fw-bold">{{currentQuestion.question}}</h3>
+      <div class="form-check mb-2" *ngFor='let questionAnsers of currentQuestion.answer'>
+        <input class="form-check-input" type="radio" name="exampleForm" id="radioExample1"
+          (click)=saveAnswer(questionAnsers) />
+        <label class="form-check-label" for="radioExample1">
+          {{ questionAnsers | titlecase}}
+        </label>
+      </div>
+      <div class="text-end">
+        <button type="button" style="float: right;" class="btn btn-primary" (click)="onNext()">Next</button>
+      </div>
+    </form>
+    <form class=" bg-white" *ngIf="!checkBox">
+      <h3 class="fw-bold">{{currentQuestion.question}}</h3>
+      <div class="form-check mb-2">
+        <input class="form-check-input" type="text" name="exampleForm" id="radioExample1" #answer />
+        <button type="button" style="float: right;" class="btn btn-primary"
+          (click)="saveAnswer(answer.value); onNext()">Submit</button>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="!ended" style="padding-top: 10%;" class="ml-0">
+    <h4 class="fw-bold text-center mt-3"> Thank you</h4>
+  </div>
 
 </div>

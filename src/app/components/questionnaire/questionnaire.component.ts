@@ -11,6 +11,7 @@ export class QuestionnaireComponent implements OnInit {
   currentAnswer: any
   checkBox: boolean = true
   answer = false
+  ended: boolean = true
   constructor(public questionsService: QuestionService) { }
 
   ngOnInit(): void {
@@ -20,6 +21,9 @@ export class QuestionnaireComponent implements OnInit {
   onNext() {
     this.currentQuestion = this.questionsService.getQuestion(this.currentAnswer)
     console.log(this.currentQuestion)
+    if (this.currentQuestion.question == "done") {
+      this.ended = false
+    }
     if (this.currentQuestion.type == "checkbox") {
       this.checkBox = true
     }

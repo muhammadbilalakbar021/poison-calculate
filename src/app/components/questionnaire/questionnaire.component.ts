@@ -15,12 +15,12 @@ export class QuestionnaireComponent implements OnInit {
   constructor(public questionsService: QuestionService) { }
 
   ngOnInit(): void {
-    this.currentQuestion = this.questionsService.getQuestion(0)
+    this.currentQuestion = this.questionsService.getQuestionWrapper(0)
   }
 
   onNext() {
-    this.currentQuestion = this.questionsService.getQuestion(this.currentAnswer)
-    console.log(this.currentQuestion)
+    this.currentQuestion = this.questionsService.getQuestionWrapper(this.currentAnswer)
+    // console.log("H",this.currentQuestion, this.currentAnswer)
     if (this.currentQuestion.question == "done") {
       this.ended = false
     }
@@ -34,6 +34,10 @@ export class QuestionnaireComponent implements OnInit {
       this.checkBox = true
     }
 
+  }
+
+  onPrev(){
+    this.currentQuestion = this.questionsService.getPreviousQuestion();
   }
 
   saveAnswer($event: any) {

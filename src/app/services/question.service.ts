@@ -42,6 +42,8 @@ export class QuestionService {
   patientslactatelevelvalue: any;
   patientslactatelevelvalue12: any;
   patientshosphatevalue: any;
+
+  alertCheck = 0;
   constructor() { }
 
   getQuestion(answer: any) {
@@ -69,7 +71,10 @@ export class QuestionService {
         this.Timeofing = true
         this.durationIngestedDose = "acute single ingestion"
         return {
-          question: "Does patient has  any of these criteria: 1. Regular ethanol consumption in excess of 21 units/week in males, 14 units/week in females 2. Regular use of enzyme-inducing drugs (carbamazepine phenytoin, phenobarbitone rifampacin) 3. Conditions causing glutathione depletion (malnutrition, HIV, eating disorders, cystic fibrosis)?",
+          question: `Does patient has any of these criteria: 
+          1. Regular ethanol consumption in excess of 21 units/week in males, 14 units/week in females 
+          2. Regular use of enzyme-inducing drugs (carbamazepine phenytoin, phenobarbitone rifampacin) 
+          3. Conditions causing glutathione depletion (malnutrition, HIV, eating disorders, cystic fibrosis)?`,
           type: 'checkbox',
           answer: ['yes', 'no']
         }
@@ -640,7 +645,7 @@ export class QuestionService {
           this.durationofexposure = false
           this.signOfHepaticfailure = false
           return {
-            question: `The toxic threshold after` + this.time + `hours is around` + line200 + `,so, NAC administration is recommended. Acute ingestion standard NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 6.25 mg/kg rate (100 mg/kg) over 16 hours.`,
+            question: `The toxic threshold after ` + this.time + `hours is around ` + line200 + `, so, NAC administration is recommended. Acute ingestion standard NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 6.25 mg/kg rate (100 mg/kg) over 16 hours.`,
             type: 'empty',
           }
         }
@@ -650,7 +655,7 @@ export class QuestionService {
           this.durationofexposure = false
           this.signOfHepaticfailure = false
           return {
-            question: `The measured acetaminophen level is` + this.time + `   the acetamiinophenlevels of higher than ` + line300 + `indicates possibility of a massive intoxication, Consider increased doses of NAC .\
+            question: `The measured acetaminophen level is ` + this.time + `   the acetamiinophenlevels of higher than ` + line300 + ` indicates possibility of a massive intoxication, Consider increased doses of NAC .\
             NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 12.5 mg/kg rate (200 mg/kg over 16 hours.`,
             type: 'empty',
           }
@@ -661,7 +666,7 @@ export class QuestionService {
           this.durationofexposure = false
           this.signOfHepaticfailure = false
           return {
-            question: `The measured Acetaminophen level` + this.time + `, the levels of higher than ` + line450 + `,  indicates a massive intoxication, Consider increased doses of NAC .NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 18.75 mg/kg rate (200 mg/kg) over 16 hours also fomepizole can be started as a loading dose of 15 mg/kg IV, followed by 10 mg/kg IV every 12 hours for four doses (48-hour period). If indicated beyond this period, dosing is increased to 15 mg/kg every 12 hours to compensate for CYP autoinduction.`,
+            question: `The measured Acetaminophen level ` + this.time + `, the levels of higher than ` + line450 + `,  indicates a massive intoxication, Consider increased doses of NAC .NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 18.75 mg/kg rate (200 mg/kg) over 16 hours also fomepizole can be started as a loading dose of 15 mg/kg IV, followed by 10 mg/kg IV every 12 hours for four doses (48-hour period). If indicated beyond this period, dosing is increased to 15 mg/kg every 12 hours to compensate for CYP autoinduction.`,
             type: 'empty',
           }
         }
@@ -676,7 +681,60 @@ export class QuestionService {
           }
         }
       }
+      else if (this.count == "How many hours was the duration of acetaminophen ingestion ?" && answer == "8-24 hours") {
+        this.count = "The exact dose of ingestion is known ?"
+        this.durationIngestedDose = "8-24 hours"
+        return {
+          question: "The exact dose of ingestion is known ?",
+          type: 'checkbox',
+          answer: ['yes', 'no']
+        }
+      }
+      else if (this.count == "The exact dose of ingestion is known ?" && answer == "yes" && this.durationIngestedDose == "8-24 hours") {
+        this.count = "how many milligrams of acetaminophen is ingested?"
+        return {
+          question: "how many milligrams of acetaminophen is ingested?",
+          type: 'input',
+        }
+      }
+      else if (this.count == "how many milligrams of acetaminophen is ingested?" && this.durationIngestedDose == "8-24 hours") {
+        this.ingested_dose = answer
+        this.count = "How many kilograms is the patient ?"
+        return {
+          question: "How many kilograms is the patient ?",
+          type: 'input',
+        }
+      }
+      else if (this.count == "How many kilograms is the patient ?" && this.durationIngestedDose == "8-24 hours") {
+        this.weight = answer
+        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.chronicuser = true
+        this.durationofexposure = false
+        this.signOfHepaticfailure = false
+        if (this.ingested_dose < 10000 || this.ingested_dose / this.weight < 200) {
+          return {
+            question: "No further treatment is required and no NAC is needed.",
+            type: 'empty',
+          }
+        }
+        else {
+          return {
+            question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
+            type: 'empty',
+          }
+        }
+      }
+      else if (this.count == "The exact dose of ingestion is known ?" && answer == "no" && this.durationIngestedDose == "8-24 hours") {
+        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.chronicuser = true
+        this.durationofexposure = false
+        this.signOfHepaticfailure = false
 
+        return {
+          question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
+          type: 'empty',
+        }
+      }
       else if (this.count == "How many hours was the duration of acetaminophen ingestion ?" && answer == "24-48 hours") {
         this.count = "The exact dose of ingestion is known ?"
         this.durationIngestedDose = "24-48 hours"
@@ -703,16 +761,19 @@ export class QuestionService {
       }
       else if (this.count == "How many kilograms is the patient ?" && this.durationIngestedDose == "24-48 hours") {
         this.weight = answer
-        this.count = "How many kilograms is the patient ?"
+        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.chronicuser = true
+        this.durationofexposure = false
+        this.signOfHepaticfailure = false
         if (this.ingested_dose < 12000 || this.ingested_dose / this.weight < 300) {
           return {
-            question: "No further treatment and no NAC",
+            question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
           }
         }
         else {
           return {
-            question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+            question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
             type: 'empty',
           }
         }
@@ -724,7 +785,7 @@ export class QuestionService {
         this.signOfHepaticfailure = false
 
         return {
-          question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+          question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }
@@ -754,10 +815,13 @@ export class QuestionService {
       }
       else if (this.count == "How many kilograms is the patient ?" && this.durationIngestedDose == "more than 48 hours") {
         this.weight = answer
-        this.count = "How many kilograms is the patient ?"
+        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.chronicuser = true
+        this.durationofexposure = false
+        this.signOfHepaticfailure = false
         if (this.ingested_dose <= 4000) {
           return {
-            question: "No further treatment and no NAC",
+            question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
           }
         }
@@ -776,7 +840,7 @@ export class QuestionService {
         this.durationofexposure = false
         this.signOfHepaticfailure = false
         return {
-          question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+          question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }
@@ -786,7 +850,7 @@ export class QuestionService {
         this.durationofexposure = false
         this.signOfHepaticfailure = false
         return {
-          question: "No further treatment and no NAC",
+          question: "No further treatment is required and no NAC is needed.",
           type: 'empty',
         }
       }
@@ -885,7 +949,7 @@ export class QuestionService {
         this.durationofexposure = false
         this.signOfHepaticfailure = false
         return {
-          question: "No further treatment and no NAC",
+          question: "No further treatment is required and no NAC is needed.",
           type: 'empty',
         }
       }
@@ -923,7 +987,7 @@ export class QuestionService {
           this.signOfHepaticfailure = true
           this.durationofexposure = false
           return {
-            question: "No further treatment and no NAC",
+            question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
           }
         }
@@ -942,7 +1006,7 @@ export class QuestionService {
         this.signOfHepaticfailure = true
         this.durationofexposure = false
         return {
-          question: "No further treatment and no NAC",
+          question: "No further treatment is required and no NAC is needed.",
           type: 'empty',
         }
       }
@@ -952,7 +1016,7 @@ export class QuestionService {
         this.signOfHepaticfailure = true
         this.durationofexposure = false
         return {
-          question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+          question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }
@@ -962,7 +1026,7 @@ export class QuestionService {
         this.signOfHepaticfailure = true
         this.durationofexposure = false
         return {
-          question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR, bicarbonat",
+          question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }
@@ -982,46 +1046,70 @@ export class QuestionService {
     }
     else if (this.chronicuser == false && this.durationofexposure == false && this.signOfHepaticfailure == true) {
       console.log("hello from outside 2")
+      console.log(this.checkTemp)
 
-      if (this.count == "Is there any signs of hepatic failure?" && this.checkTemp == false) {
+      if (this.count == "Is there any signs of hepatic failure?" && this.checkTemp == true) {
         this.count = "Is there any signs of hepatic failure?"
-        this.checkTemp = true
+        this.checkTemp = false
         return {
           question: "Is there any signs of hepatic failure?",
           type: 'checkbox',
           answer: ['yes', 'no']
         }
       }
-      if (this.complexCount == 8) {
+      if (this.alertCheck >= 8) {
+        return {
+          question: "done"
+        }
+      }
+      if (this.complexCount == 8 && this.alertCheck < 8) {
         console.log("hello from outside 1")
         console.log(this.measuredPT == "yes", this.patientsptvalue != null)
         if (this.measuredPT == "yes" && this.patientsptvalue > 100) {
           alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+          this.alertCheck += 1
+          this.measuredPT == "no"
         }
         if (this.arterialPh == "yes" && this.patientsarterialvalue < 7.3) {
           alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+          this.alertCheck += 1
+          this.arterialPh == "no"
         }
         if (this.measuredInr == "yes" && this.patientsinrvalue > 6.5) {
           alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+          this.alertCheck += 1
+          this.measuredInr == "no"
         }
         if (this.measuredCreatinin == "yes" && this.patientscreatinevalue > 3.3) {
           alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+          this.alertCheck += 1
+          this.measuredCreatinin == "no"
         }
         if (this.calculatedEncephalopathyGrade == "yes" && this.patientsencephalopathyvalue > 2) {
           alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+          this.alertCheck += 1
+          this.calculatedEncephalopathyGrade == "no"
         }
         if (this.measuredLactat4 == "yes" && this.patientslactatelevelvalue > 3.5) {
           alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+          this.alertCheck += 1
+          this.measuredLactat4 == "no"
         }
         if (this.measuredLactat12 == "yes" && this.patientslactatelevelvalue12 > 3) {
           alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+          this.alertCheck += 1
+          this.measuredLactat12 == "no"
         }
         if (this.measuredPhosphate48to96 == "yes" && this.patientshosphatevalue > 3.75) {
           alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+          this.alertCheck += 1
+          this.measuredPhosphate48to96 == "no"
         }
-        else {
-          alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended")
-        }
+        // else {
+        //   alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended")
+        //   this.alertCheck += 1
+        //   this.measuredPT == "no"
+        // }
       }
       if (this.count == "Is there any signs of hepatic failure?" && answer == "yes") {
         this.count = "PT is measured?"
@@ -1215,7 +1303,7 @@ export class QuestionService {
         }
       }
       else if (this.count == "48-96h Phosphate level (mmol/L) is evaluated?") {
-        if(answer == 123456){
+        if (answer == 123456) {
           this.complexCount = this.complexCount + 1
           if (this.measuredPhosphate48to96 == "yes") {
             this.count = "What is 48-96h Phosphate level (mmol/L) after fluid  resuscitation ?)"

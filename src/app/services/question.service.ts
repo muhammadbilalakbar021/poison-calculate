@@ -82,28 +82,36 @@ export class QuestionService {
     answer: null
   }
   history: Array<Istate> = []
+  last: Object = {
+    question: "",
+    type: "",
+    answer: []
+  }
   constructor() { }
 
   getQuestionWrapper(answer: any) {
-    console.log("Wrapper called");
+    if(answer === undefined) {
+      return this.last;
+    }
+    // console.log("Wrapper called");
     this.state.answer = answer;
-    console.log("Pushing", answer);
+    // console.log("Pushing", answer);
     this.history.push(JSON.parse(JSON.stringify(this.state)));
-    return this.getQuestion(answer);
+    this.last =  this.getQuestion(answer);
+    return this.last;
   }
 
   getPreviousQuestion() {
     if (this.history.length > 1) {
     this.history.pop();
       this.state = this.history.pop() || this.state;
-      console.log("Popped", this.state);
-      console.log("Get Previous Question:",this.state.answer);
-      return this.getQuestionWrapper(this.state.answer);
+      // console.log("Popped", this.state);
+      // console.log("Get Previous Question:",this.state.answer);
     } else {
       this.state = this.history[0];
       this.history = [];
-      return this.getQuestionWrapper(this.state.answer);
     }
+    return this.getQuestionWrapper(this.state.answer);
   }
 
   getQuestion(answer: any) {

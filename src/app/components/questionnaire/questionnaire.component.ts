@@ -15,12 +15,21 @@ export class QuestionnaireComponent implements OnInit {
   constructor(public questionsService: QuestionService) { }
 
   ngOnInit(): void {
-    this.currentQuestion = this.questionsService.getQuestion(0)
+    this.currentQuestion = this.questionsService.getQuestionWrapper(0)
+  }
+
+  log(t: any): void {
+    console.log(t);
   }
 
   onNext() {
-    this.currentQuestion = this.questionsService.getQuestion(this.currentAnswer)
-    console.log(this.currentQuestion)
+    if(this.currentQuestion.type !== "empty" && !this.currentAnswer) {
+      return;
+    }
+    let t = this.currentAnswer;
+    this.currentAnswer = null;
+    this.currentQuestion = this.questionsService.getQuestionWrapper(t);
+    // console.log("H",this.currentQuestion, this.currentAnswer)
     if (this.currentQuestion.question == "done") {
       this.ended = false
     }
@@ -36,10 +45,19 @@ export class QuestionnaireComponent implements OnInit {
 
   }
 
-  saveAnswer($event: any) {
-    console.log($event)
-    this.currentAnswer = $event
+  onPrev(){
+    this.currentQuestion = this.questionsService.getPreviousQuestion();
+  }
 
+  saveAnswer($event: any, type: string) {
+    this.currentAnswer = $event
+    if(type === "text") {
+      if(!this.currentAnswer.match(/\d+/)){
+        this.currentAnswer = null;
+      }
+    } else if (type === "radio"){
+      // if(!this.currentAnswer.match());
+    }
   }
 
 }

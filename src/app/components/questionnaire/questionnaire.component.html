@@ -1,4 +1,5 @@
 <a type="button" href="questionanaire" style="float: right;" class="btn btn-outline-primary">Start Again</a>
+<a type="button" class="btn btn-primary" (click)="onPrev()" style="float: right;" class="btn btn-outline-primary">Previous</a>
 <div class="container">
   <div style="padding-top: 10%;">
     <h2>This calculator is based on the Rumack and Matthew study. Treatment thresholds are estimated to be 25% below the
@@ -12,11 +13,11 @@
     <h4 class="fw-bold text-center mt-3"></h4>
     <form class=" bg-white " *ngIf="checkBox">
       <h3 class="fw-bold">{{currentQuestion.question}}</h3>
-      <div class="form-check mb-2" *ngFor='let questionAnsers of currentQuestion.answer'>
-        <input class="form-check-input" type="radio" name="exampleForm" id="radioExample1"
-          (click)=saveAnswer(questionAnsers) />
+      <div class="form-check mb-2" *ngFor='let questionAnswers of currentQuestion.answer'>
+        <input class="form-check-input" type="radio" name="radioInput" id="radio"
+          (click)="saveAnswer(questionAnswers, 'radio')" />
         <label class="form-check-label" for="radioExample1">
-          {{ questionAnsers | titlecase}}
+          {{ questionAnswers | titlecase}}
         </label>
       </div>
       <div class="text-end">
@@ -26,9 +27,9 @@
     <form class=" bg-white" *ngIf="!checkBox">
       <h3 class="fw-bold">{{currentQuestion.question}}</h3>
       <div class="form-check mb-2">
-        <input class="form-check-input" type="text" name="exampleForm" id="radioExample1" #answer />
+        <input class="form-check-input" type="text" name="textInput" id="text" #answer />
         <button type="button" style="float: right;" class="btn btn-primary"
-          (click)="saveAnswer(answer.value); onNext()">Submit</button>
+          (click)="saveAnswer(answer.value, 'text'); onNext()">Submit</button>
       </div>
     </form>
   </div>

@@ -1,65 +1,133 @@
 import { Injectable } from '@angular/core';
 
+interface Istate {
+  count: any,
+  currentOption: any,
+  time: any,
+  estimatetime: any,
+  rumack_nomogram: any,
+  Timeofing: any,
+  previousAnswer: any,
+  ingested_dose: any,
+  weight: any,
+  age: any,
+  durationIngestedDose: any,
+  riskbox: any,
+  arterialPh: any,
+  measuredPT: any,
+  measuredInr: any,
+  measuredCreatinin: any,
+  calculatedEncephalopathyGrade: any,
+  measuredLactat4: any,
+  measuredLactat12: any,
+  measuredPhosphate48to96: any,
+  chronicuser: boolean,
+  signOfHepaticfailure: boolean,
+  durationofexposure: boolean,
+  checkTemp: boolean,
+  ransomLastCheck: boolean,
+  complexCount: any,
+  patientsptvalue: any,
+  patientsarterialvalue: any,
+  patientsinrvalue: any,
+  patientscreatinevalue: any,
+  patientsencephalopathyvalue: any,
+  patientslactatelevelvalue: any,
+  patientslactatelevelvalue12: any,
+  patientshosphatevalue: any,
+  alertCheck: any,
+  answer: any
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class QuestionService {
-  count: any = null
-  currentOption: any
-  time: any = null
-  estimatetime: any = null
-
-  rumack_nomogram = false
-
-  Timeofing = false
-  previousAnswer: any
-
-  ingested_dose: any
-  weight: any
-  age: any;
-  durationIngestedDose: any
-  riskbox: any;
-  arterialPh: any = null
-  measuredPT: any = null
-  measuredInr: any = null
-  measuredCreatinin: any = null
-  calculatedEncephalopathyGrade: any = null
-  measuredLactat4: any = null
-  measuredLactat12: any = null
-  measuredPhosphate48to96: any = null
-  chronicuser = false
-  signOfHepaticfailure = false
-  durationofexposure = true
-  checkTemp = false
-  ransomLastCheck = false
-
-  complexCount = 0
-  patientsptvalue: any = null
-  patientsarterialvalue: any;
-  patientsinrvalue: any;
-  patientscreatinevalue: any;
-  patientsencephalopathyvalue: any;
-  patientslactatelevelvalue: any;
-  patientslactatelevelvalue12: any;
-  patientshosphatevalue: any;
-
-  alertCheck = 0;
+  state: Istate = {
+    count: null,
+    currentOption: null,
+    time: null,
+    estimatetime: null,
+    rumack_nomogram: false,
+    Timeofing: false,
+    previousAnswer: null,
+    ingested_dose: null,
+    weight: null,
+    age: null,
+    durationIngestedDose: null,
+    riskbox: null,
+    arterialPh: null,
+    measuredPT: null,
+    measuredInr: null,
+    measuredCreatinin: null,
+    calculatedEncephalopathyGrade: null,
+    measuredLactat4: null,
+    measuredLactat12: null,
+    measuredPhosphate48to96: null,
+    chronicuser: false,
+    signOfHepaticfailure: false,
+    durationofexposure: true,
+    checkTemp: false,
+    ransomLastCheck: false,
+    complexCount: 0,
+    patientsptvalue: null,
+    patientsarterialvalue: null,
+    patientsinrvalue: null,
+    patientscreatinevalue: null,
+    patientsencephalopathyvalue: null,
+    patientslactatelevelvalue: null,
+    patientslactatelevelvalue12: null,
+    patientshosphatevalue: null,
+    alertCheck: 0,
+    answer: null
+  }
+  history: Array<Istate> = []
+  last: Object = {
+    question: "",
+    type: "",
+    answer: []
+  }
   constructor() { }
 
+  getQuestionWrapper(answer: any) {
+    if(answer === undefined) {
+      return this.last;
+    }
+    // console.log("Wrapper called");
+    this.state.answer = answer;
+    // console.log("Pushing", answer);
+    this.history.push(JSON.parse(JSON.stringify(this.state)));
+    this.last =  this.getQuestion(answer);
+    return this.last;
+  }
+
+  getPreviousQuestion() {
+    if (this.history.length > 1) {
+    this.history.pop();
+      this.state = this.history.pop() || this.state;
+      // console.log("Popped", this.state);
+      // console.log("Get Previous Question:",this.state.answer);
+    } else {
+      this.state = this.history[0];
+      this.history = [];
+    }
+    return this.getQuestionWrapper(this.state.answer);
+  }
+
   getQuestion(answer: any) {
-    console.log(this.count, answer, this.chronicuser, this.durationofexposure, this.signOfHepaticfailure)
-    if (this.chronicuser == false && this.durationofexposure == true && this.signOfHepaticfailure == false) {
-      if (this.count == null && answer == 0) {
-        this.count = "Is the duration of acetaminophen ingestion is known ?"
+    console.log("1S",this.state.count, answer, this.state.chronicuser, this.state.durationofexposure, this.state.signOfHepaticfailure)
+    if (this.state.chronicuser == false && this.state.durationofexposure == true && this.state.signOfHepaticfailure == false) {
+      if (this.state.count == null && answer == 0) {
+        this.state.count = "Is the duration of acetaminophen ingestion is known ?"
         return {
           question: "Is the duration of acetaminophen ingestion is known ?",
           type: 'checkbox',
           answer: ['yes', 'no']
         }
       }
-      else if (this.count == "Is the duration of acetaminophen ingestion is known ?" && answer == 'yes') {
-        console.log(this.count)
-        this.count = "How many hours was the duration of acetaminophen ingestion ?"
+      else if (this.state.count == "Is the duration of acetaminophen ingestion is known ?" && answer == 'yes') {
+        //console.log(this.state.count)
+        this.state.count = "How many hours was the duration of acetaminophen ingestion ?"
         return {
           question: "How many hours was the duration of acetaminophen ingestion ?",
           type: 'checkbox',
@@ -67,9 +135,9 @@ export class QuestionService {
         }
 
       }
-      else if (this.count == "How many hours was the duration of acetaminophen ingestion ?" && (answer == 'acute single ingestion' || answer == 'less than 8 hours')) {
-        this.Timeofing = true
-        this.durationIngestedDose = "acute single ingestion"
+      else if (this.state.count == "How many hours was the duration of acetaminophen ingestion ?" && (answer == 'acute single ingestion' || answer == 'less than 8 hours')) {
+        this.state.Timeofing = true
+        this.state.durationIngestedDose = "acute single ingestion"
         return {
           question: `Does patient has any of these criteria:
           1. Regular ethanol consumption in excess of 21 units/week in males, 14 units/week in females
@@ -79,44 +147,44 @@ export class QuestionService {
           answer: ['yes', 'no']
         }
       }
-      else if (this.Timeofing == true) {
-        this.riskbox = answer
-        this.Timeofing = false
-        this.count = "Is the time of ingestion known ?"
+      else if (this.state.Timeofing == true) {
+        this.state.riskbox = answer
+        this.state.Timeofing = false
+        this.state.count = "Is the time of ingestion known ?"
         return {
           question: "Is the time of ingestion known ?",
           type: 'checkbox',
           answer: ['yes', 'no']
         }
       }
-      else if (this.count == "Is the time of ingestion known ?" && this.Timeofing == false && answer == 'yes' && this.durationIngestedDose == "acute single ingestion") {
-        this.count = "How many hours after ingestion ?"
+      else if (this.state.count == "Is the time of ingestion known ?" && this.state.Timeofing == false && answer == 'yes' && this.state.durationIngestedDose == "acute single ingestion") {
+        this.state.count = "How many hours after ingestion ?"
         return {
           question: "How many hours after ingestion ?",
           type: 'input',
         }
       }
-      else if (this.count == "Is the time of ingestion known ?" && this.Timeofing == false && answer == 'no' && this.durationIngestedDose == "acute single ingestion") {
-        this.count = "Is the earliest possible time of ingestion less than 24 hours?"
+      else if (this.state.count == "Is the time of ingestion known ?" && this.state.Timeofing == false && answer == 'no' && this.state.durationIngestedDose == "acute single ingestion") {
+        this.state.count = "Is the earliest possible time of ingestion less than 24 hours?"
         return {
           question: "Is the earliest possible time of ingestion less than 24 hours?",
           type: 'checkbox',
           answer: ['yes, less than 24h', 'more than 24 hours or unknown']
         }
       }
-      else if (this.count == "How many hours after ingestion ?" && this.durationIngestedDose == "acute single ingestion") {
-        this.time = answer
-        this.count = "The exact dose of ingestion is known ?"
-        console.log(this.riskbox, this.count)
+      else if (this.state.count == "How many hours after ingestion ?" && this.state.durationIngestedDose == "acute single ingestion") {
+        this.state.time = answer
+        this.state.count = "The exact dose of ingestion is known ?"
+        //console.log(this.state.riskbox, this.state.count)
         return {
           question: "The exact dose of ingestion is known ?",
           type: 'checkbox',
           answer: ['yes', 'no']
         }
       }
-      else if (this.count == "Is the earliest possible time of ingestion less than 24 hours?" && this.durationIngestedDose == "acute single ingestion") {
-        this.estimatetime = answer
-        this.count = "The exact dose of ingestion is known ?"
+      else if (this.state.count == "Is the earliest possible time of ingestion less than 24 hours?" && this.state.durationIngestedDose == "acute single ingestion") {
+        this.state.estimatetime = answer
+        this.state.count = "The exact dose of ingestion is known ?"
         return {
           question: "The exact dose of ingestion is known ?",
           type: 'checkbox',
@@ -124,325 +192,325 @@ export class QuestionService {
         }
       }
 
-      else if (this.count == "The exact dose of ingestion is known ?" && (this.riskbox == "no" || this.riskbox == "yes") && answer == "yes" && this.durationIngestedDose == "acute single ingestion") {
-        this.count = "how many milligrams of acetaminophen is ingested?"
+      else if (this.state.count == "The exact dose of ingestion is known ?" && (this.state.riskbox == "no" || this.state.riskbox == "yes") && answer == "yes" && this.state.durationIngestedDose == "acute single ingestion") {
+        this.state.count = "how many milligrams of acetaminophen is ingested?"
         return {
           question: "how many milligrams of acetaminophen is ingested?",
           type: 'input',
         }
       }
-      else if (this.count == "how many milligrams of acetaminophen is ingested?" && (this.riskbox == "no" || this.riskbox == "yes") && this.durationIngestedDose == "acute single ingestion") {
-        this.count = "How many kilograms is the patient ?"
-        this.ingested_dose = answer
+      else if (this.state.count == "how many milligrams of acetaminophen is ingested?" && (this.state.riskbox == "no" || this.state.riskbox == "yes") && this.state.durationIngestedDose == "acute single ingestion") {
+        this.state.count = "How many kilograms is the patient ?"
+        this.state.ingested_dose = answer
         return {
           question: "How many kilograms is the patient ?",
           type: 'input',
         }
       }
-      else if (this.count == "How many kilograms is the patient ?" && (this.riskbox == "no" || this.riskbox == "yes") && this.durationIngestedDose == "acute single ingestion") {
-        this.weight = answer
-        this.count = "How old is the patient ?"
+      else if (this.state.count == "How many kilograms is the patient ?" && (this.state.riskbox == "no" || this.state.riskbox == "yes") && this.state.durationIngestedDose == "acute single ingestion") {
+        this.state.weight = answer
+        this.state.count = "How old is the patient ?"
         return {
           question: "How old is the patient ?",
           type: 'input',
         }
       }
-      else if (this.count == "How old is the patient ?" && (this.riskbox == "no" || this.riskbox == "yes") && this.durationIngestedDose == "acute single ingestion") {
-        this.age = answer
-        this.rumack_nomogram = true
-        this.count = "Does patient live in United Kingdom ?"
-        console.log("hello", this.age, this.weight, this.ingested_dose, this.ingested_dose / this.weight, this.time)
-        if (this.age >= 12 && (this.ingested_dose / this.weight < 142.86 || this.ingested_dose < 10000)) {
-          console.log("hello",)
-          if (this.time != null && this.time >= 4 && this.time <= 24) {
-            this.count = "Does patient live in United Kingdom ?"
+      else if (this.state.count == "How old is the patient ?" && (this.state.riskbox == "no" || this.state.riskbox == "yes") && this.state.durationIngestedDose == "acute single ingestion") {
+        this.state.age = answer
+        this.state.rumack_nomogram = true
+        this.state.count = "Does patient live in United Kingdom ?"
+        //console.log("hello", this.state.age, this.state.weight, this.state.ingested_dose, this.state.ingested_dose / this.state.weight, this.state.time)
+        if (this.state.age >= 12 && (this.state.ingested_dose / this.state.weight < 142.86 || this.state.ingested_dose < 10000)) {
+          //console.log("hello",)
+          if (this.state.time != null && this.state.time >= 4 && this.state.time <= 24) {
+            this.state.count = "Does patient live in United Kingdom ?"
             return {
               question: "Does patient live in United Kingdom ?",
               type: 'checkbox',
               answer: ['yes', 'no']
             }
           }
-          else if (this.time == null && this.estimatetime == "yes, less than 24h") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "yes, less than 24h") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
             }
           }
-          else if (this.time == null && this.estimatetime == "more than 24 hours or unknown") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
             }
           }
         }
-        else if (this.age >= 12 && (this.ingested_dose / this.weight < 250 && this.ingested_dose / this.weight >= 142.86)) {
-          if (this.time != null && this.time >= 4 && this.time <= 24) {
-            this.count = "Does patient live in United Kingdom ?"
+        else if (this.state.age >= 12 && (this.state.ingested_dose / this.state.weight < 250 && this.state.ingested_dose / this.state.weight >= 142.86)) {
+          if (this.state.time != null && this.state.time >= 4 && this.state.time <= 24) {
+            this.state.count = "Does patient live in United Kingdom ?"
             return {
               question: "Does patient live in United Kingdom ?",
               type: 'checkbox',
               answer: ['yes', 'no']
             }
           }
-          else if (this.time == null && this.estimatetime == "yes, less than 24h") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "yes, less than 24h") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
             }
           }
-          else if (this.time == null && this.estimatetime == "more than 24 hours or unknown") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
             }
           }
         }
-        else if (this.age >= 12 && (this.ingested_dose / this.weight < 350 && this.ingested_dose / this.weight >= 250)) {
-          if (this.time != null && this.time >= 4 && this.time <= 24) {
-            this.count = "Does patient live in United Kingdom ?"
+        else if (this.state.age >= 12 && (this.state.ingested_dose / this.state.weight < 350 && this.state.ingested_dose / this.state.weight >= 250)) {
+          if (this.state.time != null && this.state.time >= 4 && this.state.time <= 24) {
+            this.state.count = "Does patient live in United Kingdom ?"
             return {
               question: "Does patient live in United Kingdom ?",
               type: 'checkbox',
               answer: ['yes', 'no']
             }
           }
-          else if (this.time == null && this.estimatetime == "yes, less than 24h") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "yes, less than 24h") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
             }
           }
-          else if (this.time == null && this.estimatetime == "more than 24 hours or unknown") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
             }
           }
         }
-        else if (this.age >= 12 && (this.ingested_dose / this.weight < 500 && this.ingested_dose / this.weight >= 350)) {
-          if (this.time != null && this.time >= 4 && this.time <= 24) {
-            this.count = "Does patient live in United Kingdom ?"
+        else if (this.state.age >= 12 && (this.state.ingested_dose / this.state.weight < 500 && this.state.ingested_dose / this.state.weight >= 350)) {
+          if (this.state.time != null && this.state.time >= 4 && this.state.time <= 24) {
+            this.state.count = "Does patient live in United Kingdom ?"
             return {
               question: "Does patient live in United Kingdom ?",
               type: 'checkbox',
               answer: ['yes', 'no']
             }
           }
-          else if (this.time == null && this.estimatetime == "yes, less than 24h") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "yes, less than 24h") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
             }
           }
-          else if (this.time == null && this.estimatetime == "more than 24 hours or unknown") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
             }
           }
         }
-        else if (this.age >= 12 && this.ingested_dose / this.weight >= 500) {
-          if (this.time != null && this.time >= 4 && this.time <= 24) {
-            this.count = "Does patient live in United Kingdom ?"
+        else if (this.state.age >= 12 && this.state.ingested_dose / this.state.weight >= 500) {
+          if (this.state.time != null && this.state.time >= 4 && this.state.time <= 24) {
+            this.state.count = "Does patient live in United Kingdom ?"
             return {
               question: "Does patient live in United Kingdom ?",
               type: 'checkbox',
               answer: ['yes', 'no']
             }
           }
-          else if (this.time == null && this.estimatetime == "yes, less than 24h") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "yes, less than 24h") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
             }
           }
-          else if (this.time == null && this.estimatetime == "more than 24 hours or unknown") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
             }
           }
         }
-        else if (this.age < 12 && (this.ingested_dose / this.weight < 150)) {
-          if (this.time != null && this.time >= 4 && this.time <= 24) {
-            this.count = "Does patient live in United Kingdom ?"
+        else if (this.state.age < 12 && (this.state.ingested_dose / this.state.weight < 150)) {
+          if (this.state.time != null && this.state.time >= 4 && this.state.time <= 24) {
+            this.state.count = "Does patient live in United Kingdom ?"
             return {
               question: "Does patient live in United Kingdom ?",
               type: 'checkbox',
               answer: ['yes', 'no']
             }
           }
-          else if (this.time == null && this.estimatetime == "yes, less than 24h") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "yes, less than 24h") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
             }
           }
-          else if (this.time == null && this.estimatetime == "more than 24 hours or unknown") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
             }
           }
         }
-        else if (this.age < 12 && (this.ingested_dose / this.weight < 250 && this.ingested_dose / this.weight >= 150)) {
-          if (this.time != null && this.time >= 4 && this.time <= 24) {
-            this.count = "Does patient live in United Kingdom ?"
+        else if (this.state.age < 12 && (this.state.ingested_dose / this.state.weight < 250 && this.state.ingested_dose / this.state.weight >= 150)) {
+          if (this.state.time != null && this.state.time >= 4 && this.state.time <= 24) {
+            this.state.count = "Does patient live in United Kingdom ?"
             return {
               question: "Does patient live in United Kingdom ?",
               type: 'checkbox',
               answer: ['yes', 'no']
             }
           }
-          else if (this.time == null && this.estimatetime == "yes, less than 24h") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "yes, less than 24h") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
             }
           }
-          else if (this.time == null && this.estimatetime == "more than 24 hours or unknown") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
             }
           }
         }
-        else if (this.age < 12 && (this.ingested_dose / this.weight < 350 && this.ingested_dose / this.weight >= 250)) {
-          if (this.time != null && this.time >= 4 && this.time <= 24) {
-            this.count = "Does patient live in United Kingdom ?"
+        else if (this.state.age < 12 && (this.state.ingested_dose / this.state.weight < 350 && this.state.ingested_dose / this.state.weight >= 250)) {
+          if (this.state.time != null && this.state.time >= 4 && this.state.time <= 24) {
+            this.state.count = "Does patient live in United Kingdom ?"
             return {
               question: "Does patient live in United Kingdom ?",
               type: 'checkbox',
               answer: ['yes', 'no']
             }
           }
-          else if (this.time == null && this.estimatetime == "yes, less than 24h") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "yes, less than 24h") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
             }
           }
-          else if (this.time == null && this.estimatetime == "more than 24 hours or unknown") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
             }
           }
         }
-        else if (this.age < 12 && (this.ingested_dose / this.weight < 500 && this.ingested_dose / this.weight >= 350)) {
-          if (this.time != null && this.time >= 4 && this.time <= 24) {
-            this.count = "Does patient live in United Kingdom ?"
+        else if (this.state.age < 12 && (this.state.ingested_dose / this.state.weight < 500 && this.state.ingested_dose / this.state.weight >= 350)) {
+          if (this.state.time != null && this.state.time >= 4 && this.state.time <= 24) {
+            this.state.count = "Does patient live in United Kingdom ?"
             return {
               question: "Does patient live in United Kingdom ?",
               type: 'checkbox',
               answer: ['yes', 'no']
             }
           }
-          else if (this.time == null && this.estimatetime == "yes, less than 24h") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "yes, less than 24h") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
             }
           }
-          else if (this.time == null && this.estimatetime == "more than 24 hours or unknown") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
             }
           }
         }
-        else if (this.age < 12 && (this.ingested_dose / this.weight <= 500)) {
-          if (this.time != null && this.time >= 4 && this.time <= 24) {
-            this.count = "Does patient live in United Kingdom ?"
+        else if (this.state.age < 12 && (this.state.ingested_dose / this.state.weight <= 500)) {
+          if (this.state.time != null && this.state.time >= 4 && this.state.time <= 24) {
+            this.state.count = "Does patient live in United Kingdom ?"
             return {
               question: "Does patient live in United Kingdom ?",
               type: 'checkbox',
               answer: ['yes', 'no']
             }
           }
-          else if (this.time == null && this.estimatetime == "yes, less than 24h") {
-            this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-            this.chronicuser = true
-            this.durationofexposure = false
-            this.signOfHepaticfailure = false
+          else if (this.state.time == null && this.state.estimatetime == "yes, less than 24h") {
+            this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+            this.state.chronicuser = true
+            this.state.durationofexposure = false
+            this.state.signOfHepaticfailure = false
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
             }
           }
-          else if (this.time == null && this.estimatetime == "more than 24 hours or unknown") {
+          else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
@@ -450,48 +518,48 @@ export class QuestionService {
           }
         }
       }
-      else if (this.count == "The exact dose of ingestion is known ?" && (this.riskbox == "no" || this.riskbox == "yes") && answer == "no" && this.durationIngestedDose == "acute single ingestion") {
-        this.count = "To be continued"
-        console.log("hello", this.time, this.estimatetime)
-        if (this.time != null && (this.time >= 4 && this.time <= 24)) {
-          this.rumack_nomogram = true
-          this.count = "Does patient live in United Kingdom ?"
+      else if (this.state.count == "The exact dose of ingestion is known ?" && (this.state.riskbox == "no" || this.state.riskbox == "yes") && answer == "no" && this.state.durationIngestedDose == "acute single ingestion") {
+        this.state.count = "To be continued"
+        //console.log("hello", this.state.time, this.state.estimatetime)
+        if (this.state.time != null && (this.state.time >= 4 && this.state.time <= 24)) {
+          this.state.rumack_nomogram = true
+          this.state.count = "Does patient live in United Kingdom ?"
           return {
             question: "Does patient live in United Kingdom ?",
             type: 'checkbox',
             answer: ['yes', 'no']
           }
         }
-        else if (this.time == null && this.estimatetime == "yes, less than 24h") {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+        else if (this.state.time == null && this.state.estimatetime == "yes, less than 24h") {
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
             question: "Start standard or high doses of NAC and measure ALT,AST",
             type: 'empty',
           }
         }
-        else if (this.time == null && this.estimatetime == "more than 24 hours or unknown") {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+        else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
             question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR",
             type: 'empty',
           }
         }
       }
-      else if (this.count == "Does patient live in United Kingdom ?" && this.rumack_nomogram == true) {
-        this.previousAnswer = answer
-        this.count = "What is acetaminophen level(mcg/mL)?"
+      else if (this.state.count == "Does patient live in United Kingdom ?" && this.state.rumack_nomogram == true) {
+        this.state.previousAnswer = answer
+        this.state.count = "What is acetaminophen level(mcg/mL)?"
         return {
           question: "What is acetaminophen level(mcg/mL)?",
           type: 'input',
         }
       }
-      else if (this.count == "What is acetaminophen level(mcg/mL)?" && this.rumack_nomogram == true && this.previousAnswer == "no") {
+      else if (this.state.count == "What is acetaminophen level(mcg/mL)?" && this.state.rumack_nomogram == true && this.state.previousAnswer == "no") {
         let line200: any
         let uk: any
         let line98: any
@@ -500,9 +568,9 @@ export class QuestionService {
         let line300: any
         let line450: any
         let line600: any
-        console.log(this.time)
-        if (this.time >= 4 && this.time <= 24) {
-          line200 = Math.round(Math.exp(5.298317 - ((this.time - 4) * 0.1732868)))
+        //console.log(this.state.time)
+        if (this.state.time >= 4 && this.state.time <= 24) {
+          line200 = Math.round(Math.exp(5.298317 - ((this.state.time - 4) * 0.1732868)))
           uk = Math.round(line200 - (0.5 * line200))
           line98 = Math.round(line200 - (0.51 * line200))
           line150 = Math.round(line200 - (0.25 * line200))
@@ -510,83 +578,83 @@ export class QuestionService {
           line300 = Math.round(line200 + (0.5 * line200))
           line450 = Math.round(line200 + (1.25 * line200))
           line600 = Math.round(line200 + (2 * line200))
-          console.log(line200, uk, line98, line150, line140, line300, line450, line600)
+          //console.log(line200, uk, line98, line150, line140, line300, line450, line600)
         }
         if (answer < line140) {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
-            question: `The treatment threshold after ` + this.time + ` hours is around ` + line150 + ` ,so there is low risk of significant toxicity. Antidote adminitration is not neccessary`,
+            question: `The treatment threshold after ` + this.state.time + ` hours is around ` + line150 + ` ,so there is low risk of significant toxicity. Antidote adminitration is not neccessary`,
             type: 'empty',
           }
         }
         else if (answer <= line150 && answer >= line140) {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
-            question: `The treatment threshold after ` + this.time + ` hours is around ` +
+            question: `The treatment threshold after ` + this.state.time + ` hours is around ` +
               line150 + `, patient’s acetaminophen (` + line140 + `) is so close to the threshold, rechecking of the level is strongly recommended`,
             type: 'empty',
           }
         }
         else if (answer >= line150 && answer <= line200) {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
-            question: `The treatment threshold after ` + this.time + ` hours is around ` + line150 + `, so, NAC administration is recommended. Acute ingestion standard NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 6.25 mg/kg rate (100 mg/kg over 16 hours.`,
+            question: `The treatment threshold after ` + this.state.time + ` hours is around ` + line150 + `, so, NAC administration is recommended. Acute ingestion standard NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 6.25 mg/kg rate (100 mg/kg over 16 hours.`,
             type: 'empty',
           }
         }
         else if (answer > line200 && answer <= line300) {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
-            question: `The toxic threshold after ` + this.time + `hours is around ` + line200 + `, so, NAC administration is recommended. Acute ingestion standard NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 6.25 mg/kg rate (100 mg/kg) over 16 hours.`,
+            question: `The toxic threshold after ` + this.state.time + `hours is around ` + line200 + `, so, NAC administration is recommended. Acute ingestion standard NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 6.25 mg/kg rate (100 mg/kg) over 16 hours.`,
             type: 'empty',
           }
         }
         else if (answer > line300 && answer <= line450) {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
-            question: `The measured APAP level is ` + this.time + `   the acetamiinophenlevels of higher than ` + line300 + `indicates possibility of a massive intoxication, Consider increased doses of NAC .\
+            question: `The measured APAP level is ` + this.state.time + `   the acetamiinophenlevels of higher than ` + line300 + `indicates possibility of a massive intoxication, Consider increased doses of NAC .\
             NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 12.5 mg/kg rate (200 mg/kg over 16 hours.`,
             type: 'empty',
           }
         }
         else if (answer > line450 && answer <= line600) {
-          console.log(line450)
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          //console.log(line450)
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
-            question: `The measured Acetaminophen level ` + this.time + `, the levels of higher than ` + line450 + `, indicates a massive intoxication, Consider increased doses of NAC .NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 18.75 mg/kg rate (200 mg/kg) over 16 hours also fomepizole can be started as a loading dose of 15 mg/kg IV, followed by 10 mg/kg IV every 12 hours for four doses (48-hour period). If indicated beyond this period, dosing is increased to 15 mg/kg every 12 hours to compensate for CYP autoinduction.`,
+            question: `The measured Acetaminophen level ` + this.state.time + `, the levels of higher than ` + line450 + `, indicates a massive intoxication, Consider increased doses of NAC .NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 18.75 mg/kg rate (200 mg/kg) over 16 hours also fomepizole can be started as a loading dose of 15 mg/kg IV, followed by 10 mg/kg IV every 12 hours for four doses (48-hour period). If indicated beyond this period, dosing is increased to 15 mg/kg every 12 hours to compensate for CYP autoinduction.`,
             type: 'empty',
           }
         }
         else {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
             question: `The measured Acetaminophen level ` + answer + `, the levels of higher than ` + line600 + `, indicates  a  massive intoxication, Consider increased doses of NAC .NAC dosing can be given orally or intravenously.Intravenous dosing typically involves a 150 mg / kl bolus over 60 min followed by 12.5 mg / kg / h for 4 hours(50 mg/ kg over 4 hours) then 25 mg / kg rate(200 mg / kg) over 16 hours, in addition, consider Intermittent hemodialysis and fomepizole administration can be started as a loading dose of 15 mg / kg IV, followed by 10 mg / kg IV every 12 hours for four doses(48 - hour period).If indicated beyond this period, dosing is increased to 15 mg / kg every 12 hours to compensate for CYP autoinduction."`,
             type: 'empty',
           }
         }
       }
-      else if (this.count == "What is acetaminophen level(mcg/mL)?" && this.rumack_nomogram == true && this.previousAnswer == "yes") {
+      else if (this.state.count == "What is acetaminophen level(mcg/mL)?" && this.state.rumack_nomogram == true && this.state.previousAnswer == "yes") {
         let line200: any
         let uk: any
         let line98: any
@@ -595,9 +663,9 @@ export class QuestionService {
         let line300: any
         let line450: any
         let line600: any
-        console.log(this.time)
-        if (this.time >= 4 && this.time <= 24) {
-          line200 = Math.round(Math.exp(5.298317 - ((this.time - 4) * 0.1732868)))
+        //console.log(this.state.time)
+        if (this.state.time >= 4 && this.state.time <= 24) {
+          line200 = Math.round(Math.exp(5.298317 - ((this.state.time - 4) * 0.1732868)))
           uk = Math.round(line200 - (0.5 * line200))
           line98 = Math.round(line200 - (0.51 * line200))
           line150 = Math.round(line200 - (0.25 * line200))
@@ -605,113 +673,113 @@ export class QuestionService {
           line300 = Math.round(line200 + (0.5 * line200))
           line450 = Math.round(line200 + (1.25 * line200))
           line600 = Math.round(line200 + (2 * line200))
-          console.log(line200, uk, line98, line150, line140, line300, line450, line600)
+          //console.log(line200, uk, line98, line150, line140, line300, line450, line600)
         }
         if (answer < line98) {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
-            question: `The treatment threshold after ` + this.time + ` hours is around ` + uk + `, so there is low risk of significant toxicity. Antidote adminitration is not neccessary`,
+            question: `The treatment threshold after ` + this.state.time + ` hours is around ` + uk + `, so there is low risk of significant toxicity. Antidote adminitration is not neccessary`,
             type: 'empty',
           }
         }
         else if (answer > line98 && answer < uk) {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
-            question: `The treatment threshold after ` + this.time + ` hours is around ` +
+            question: `The treatment threshold after ` + this.state.time + ` hours is around ` +
               line150 + `, patient's acetaminophen (` + answer + `) is so close to the threshold, rechecking of the level is strongly recommended`,
             type: 'empty',
           }
         }
         else if (answer >= uk && answer <= line200) {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
-            question: `The treatment threshold after ` + this.time + ` hours is around ` + uk + `, so,the paracetamol level indicates possible toxicity , antidote administration is recomended`,
+            question: `The treatment threshold after ` + this.state.time + ` hours is around ` + uk + `, so,the paracetamol level indicates possible toxicity , antidote administration is recomended`,
 
             type: 'empty',
           }
         }
         else if (answer > line200 && answer <= line300) {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
-            question: `The toxic threshold after ` + this.time + ` hours is around ` + line200 + `, so, NAC administration is recommended. Acute ingestion standard NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 6.25 mg/kg rate (100 mg/kg) over 16 hours.`,
+            question: `The toxic threshold after ` + this.state.time + ` hours is around ` + line200 + `, so, NAC administration is recommended. Acute ingestion standard NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 6.25 mg/kg rate (100 mg/kg) over 16 hours.`,
             type: 'empty',
           }
         }
         else if (answer > line300 && answer <= line450) {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
-            question: `The measured acetaminophen level is ` + this.time + ` the acetamiinophenlevels of higher than ` + line300 + ` indicates possibility of a massive intoxication, Consider increased doses of NAC .\
+            question: `The measured acetaminophen level is ` + this.state.time + ` the acetamiinophenlevels of higher than ` + line300 + ` indicates possibility of a massive intoxication, Consider increased doses of NAC .\
             NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 12.5 mg/kg rate (200 mg/kg over 16 hours.`,
             type: 'empty',
           }
         }
         else if (answer > line450 && answer <= line600) {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
-            question: `The measured Acetaminophen level ` + this.time + `, the levels of higher than ` + line450 + `,  indicates a massive intoxication, Consider increased doses of NAC .NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 18.75 mg/kg rate (200 mg/kg) over 16 hours also fomepizole can be started as a loading dose of 15 mg/kg IV, followed by 10 mg/kg IV every 12 hours for four doses (48-hour period). If indicated beyond this period, dosing is increased to 15 mg/kg every 12 hours to compensate for CYP autoinduction.`,
+            question: `The measured Acetaminophen level ` + this.state.time + `, the levels of higher than ` + line450 + `,  indicates a massive intoxication, Consider increased doses of NAC .NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 18.75 mg/kg rate (200 mg/kg) over 16 hours also fomepizole can be started as a loading dose of 15 mg/kg IV, followed by 10 mg/kg IV every 12 hours for four doses (48-hour period). If indicated beyond this period, dosing is increased to 15 mg/kg every 12 hours to compensate for CYP autoinduction.`,
             type: 'empty',
           }
         }
         else {
-          this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-          this.chronicuser = true
-          this.durationofexposure = false
-          this.signOfHepaticfailure = false
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
           return {
             question: `The measured Acetaminophen level ` + answer + `, the levels of higher than ` + line600 + `, indicates  a  massive intoxication, Consider increased doses of NAC .NAC dosing can be given orally or intravenously.Intravenous dosing typically involves a 150 mg / kl bolus over 60 min followed by 12.5 mg / kg / h for 4 hours(50 mg/ kg over 4 hours) then 25 mg / kg rate(200 mg / kg) over 16 hours, in addition, consider Intermittent hemodialysis and fomepizole administration can be started as a loading dose of 15 mg / kg IV, followed by 10 mg / kg IV every 12 hours for four doses(48 - hour period).If indicated beyond this period, dosing is increased to 15 mg / kg every 12 hours to compensate for CYP autoinduction."`,
             type: 'empty',
           }
         }
       }
-      else if (this.count == "How many hours was the duration of acetaminophen ingestion ?" && answer == "8-24 hours") {
-        this.count = "The exact dose of ingestion is known ?"
-        this.durationIngestedDose = "8-24 hours"
+      else if (this.state.count == "How many hours was the duration of acetaminophen ingestion ?" && answer == "8-24 hours") {
+        this.state.count = "The exact dose of ingestion is known ?"
+        this.state.durationIngestedDose = "8-24 hours"
         return {
           question: "The exact dose of ingestion is known ?",
           type: 'checkbox',
           answer: ['yes', 'no']
         }
       }
-      else if (this.count == "The exact dose of ingestion is known ?" && answer == "yes" && this.durationIngestedDose == "8-24 hours") {
-        this.count = "how many milligrams of acetaminophen is ingested?"
+      else if (this.state.count == "The exact dose of ingestion is known ?" && answer == "yes" && this.state.durationIngestedDose == "8-24 hours") {
+        this.state.count = "how many milligrams of acetaminophen is ingested?"
         return {
           question: "how many milligrams of acetaminophen is ingested?",
           type: 'input',
         }
       }
-      else if (this.count == "how many milligrams of acetaminophen is ingested?" && this.durationIngestedDose == "8-24 hours") {
-        this.ingested_dose = answer
-        this.count = "How many kilograms is the patient ?"
+      else if (this.state.count == "how many milligrams of acetaminophen is ingested?" && this.state.durationIngestedDose == "8-24 hours") {
+        this.state.ingested_dose = answer
+        this.state.count = "How many kilograms is the patient ?"
         return {
           question: "How many kilograms is the patient ?",
           type: 'input',
         }
       }
-      else if (this.count == "How many kilograms is the patient ?" && this.durationIngestedDose == "8-24 hours") {
-        this.weight = answer
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
-        if (this.ingested_dose < 10000 || this.ingested_dose / this.weight < 200) {
+      else if (this.state.count == "How many kilograms is the patient ?" && this.state.durationIngestedDose == "8-24 hours") {
+        this.state.weight = answer
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
+        if (this.state.ingested_dose < 10000 || this.state.ingested_dose / this.state.weight < 200) {
           return {
             question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
@@ -724,48 +792,48 @@ export class QuestionService {
           }
         }
       }
-      else if (this.count == "The exact dose of ingestion is known ?" && answer == "no" && this.durationIngestedDose == "8-24 hours") {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
+      else if (this.state.count == "The exact dose of ingestion is known ?" && answer == "no" && this.state.durationIngestedDose == "8-24 hours") {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
 
         return {
           question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }
-      else if (this.count == "How many hours was the duration of acetaminophen ingestion ?" && answer == "24-48 hours") {
-        this.count = "The exact dose of ingestion is known ?"
-        this.durationIngestedDose = "24-48 hours"
+      else if (this.state.count == "How many hours was the duration of acetaminophen ingestion ?" && answer == "24-48 hours") {
+        this.state.count = "The exact dose of ingestion is known ?"
+        this.state.durationIngestedDose = "24-48 hours"
         return {
           question: "The exact dose of ingestion is known ?",
           type: 'checkbox',
           answer: ['yes', 'no']
         }
       }
-      else if (this.count == "The exact dose of ingestion is known ?" && answer == "yes" && this.durationIngestedDose == "24-48 hours") {
-        this.count = "how many milligrams of acetaminophen is ingested?"
+      else if (this.state.count == "The exact dose of ingestion is known ?" && answer == "yes" && this.state.durationIngestedDose == "24-48 hours") {
+        this.state.count = "how many milligrams of acetaminophen is ingested?"
         return {
           question: "how many milligrams of acetaminophen is ingested?",
           type: 'input',
         }
       }
-      else if (this.count == "how many milligrams of acetaminophen is ingested?" && this.durationIngestedDose == "24-48 hours") {
-        this.ingested_dose = answer
-        this.count = "How many kilograms is the patient ?"
+      else if (this.state.count == "how many milligrams of acetaminophen is ingested?" && this.state.durationIngestedDose == "24-48 hours") {
+        this.state.ingested_dose = answer
+        this.state.count = "How many kilograms is the patient ?"
         return {
           question: "How many kilograms is the patient ?",
           type: 'input',
         }
       }
-      else if (this.count == "How many kilograms is the patient ?" && this.durationIngestedDose == "24-48 hours") {
-        this.weight = answer
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
-        if (this.ingested_dose < 12000 || this.ingested_dose / this.weight < 300) {
+      else if (this.state.count == "How many kilograms is the patient ?" && this.state.durationIngestedDose == "24-48 hours") {
+        this.state.weight = answer
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
+        if (this.state.ingested_dose < 12000 || this.state.ingested_dose / this.state.weight < 300) {
           return {
             question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
@@ -778,55 +846,55 @@ export class QuestionService {
           }
         }
       }
-      else if (this.count == "The exact dose of ingestion is known ?" && answer == "no" && this.durationIngestedDose == "24-48 hours") {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
+      else if (this.state.count == "The exact dose of ingestion is known ?" && answer == "no" && this.state.durationIngestedDose == "24-48 hours") {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
 
         return {
           question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }
-      else if (this.count == "How many hours was the duration of acetaminophen ingestion ?" && answer == "more than 48 hours") {
-        this.count = "The exact dose of ingestion is known ?"
-        this.durationIngestedDose = "more than 48 hours"
+      else if (this.state.count == "How many hours was the duration of acetaminophen ingestion ?" && answer == "more than 48 hours") {
+        this.state.count = "The exact dose of ingestion is known ?"
+        this.state.durationIngestedDose = "more than 48 hours"
         return {
           question: "The exact dose of ingestion is known ?",
           type: 'checkbox',
           answer: ['yes', 'no']
         }
       }
-      else if (this.count == "The exact dose of ingestion is known ?" && answer == "yes" && this.durationIngestedDose == "more than 48 hours") {
-        this.count = "how many milligrams of acetaminophen is ingested?"
+      else if (this.state.count == "The exact dose of ingestion is known ?" && answer == "yes" && this.state.durationIngestedDose == "more than 48 hours") {
+        this.state.count = "how many milligrams of acetaminophen is ingested?"
         return {
           question: "how many milligrams of acetaminophen is ingested?",
           type: 'input',
         }
       }
-      else if (this.count == "how many milligrams of acetaminophen is ingested?" && this.durationIngestedDose == "more than 48 hours") {
-        this.ingested_dose = answer
-        this.count = "How many kilograms is the patient ?"
+      else if (this.state.count == "how many milligrams of acetaminophen is ingested?" && this.state.durationIngestedDose == "more than 48 hours") {
+        this.state.ingested_dose = answer
+        this.state.count = "How many kilograms is the patient ?"
         return {
           question: "How many kilograms is the patient ?",
           type: 'input',
         }
       }
-      else if (this.count == "How many kilograms is the patient ?" && this.durationIngestedDose == "more than 48 hours") {
-        this.weight = answer
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
-        if (this.ingested_dose <= 4000) {
+      else if (this.state.count == "How many kilograms is the patient ?" && this.state.durationIngestedDose == "more than 48 hours") {
+        this.state.weight = answer
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
+        if (this.state.ingested_dose <= 4000) {
           return {
             question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
           }
         }
         else {
-          this.count = "Does the patient have any of these signs: nausea/vomiting/abdominal pain?"
+          this.state.count = "Does the patient have any of these signs: nausea/vomiting/abdominal pain?"
           return {
             question: "Does the patient have any of these signs: nausea/vomiting/abdominal pain?",
             type: 'checkbox',
@@ -834,165 +902,165 @@ export class QuestionService {
           }
         }
       }
-      else if (this.count == "Does the patient have any of these signs: nausea/vomiting/abdominal pain?" && answer == "yes") {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
+      else if (this.state.count == "Does the patient have any of these signs: nausea/vomiting/abdominal pain?" && answer == "yes") {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
         return {
           question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }
-      else if (this.count == "Does the patient have any of these signs: nausea/vomiting/abdominal pain?" && answer == "no") {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
+      else if (this.state.count == "Does the patient have any of these signs: nausea/vomiting/abdominal pain?" && answer == "no") {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
         return {
           question: "No further treatment is required and no NAC is needed.",
           type: 'empty',
         }
       }
-      else if (this.count == "The exact dose of ingestion is known ?" && answer == "no" && this.durationIngestedDose == "more than 48 hours") {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
+      else if (this.state.count == "The exact dose of ingestion is known ?" && answer == "no" && this.state.durationIngestedDose == "more than 48 hours") {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
         return {
           question: "To be continued",
           type: 'empty',
         }
       }
-      else if (this.count == "Is the duration of acetaminophen ingestion is known ?" && answer == 'no') {
-        this.count = "What is acetaminophen level(mcg/mL)?"
+      else if (this.state.count == "Is the duration of acetaminophen ingestion is known ?" && answer == 'no') {
+        this.state.count = "What is acetaminophen level(mcg/mL)?"
         return {
           question: "What is acetaminophen level(mcg/mL)?",
           type: 'input',
         }
 
       }
-      else if (this.count == "What is acetaminophen level(mcg/mL)?" && answer > 0) {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
+      else if (this.state.count == "What is acetaminophen level(mcg/mL)?" && answer > 0) {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
         return {
           question: "Start standard doses of NAC",
           type: 'empty',
         }
       }
-      else if (this.count == "What is acetaminophen level(mcg/mL)?" && answer <= 0) {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
+      else if (this.state.count == "What is acetaminophen level(mcg/mL)?" && answer <= 0) {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
         return {
           question: "What is patient's PT ?",
           type: 'input',
         }
       }
-      else if (this.count == "What is patient's PT ?" && answer > 14) {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
+      else if (this.state.count == "What is patient's PT ?" && answer > 14) {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
         return {
           question: "Start standard doses of NAC",
           type: 'empty',
         }
       }
-      else if (this.count == "What is patient's PT ?" && answer <= 14) {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
+      else if (this.state.count == "What is patient's PT ?" && answer <= 14) {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
         return {
           question: "What is patient's INR ?",
           type: 'input',
         }
       }
-      else if (this.count == "What is patient's INR ?" && answer > 2) {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
+      else if (this.state.count == "What is patient's INR ?" && answer > 2) {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
         return {
           question: "Start standard doses of NAC",
           type: 'empty',
         }
       }
-      else if (this.count == "What is patient's INR ?" && answer <= 2) {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
+      else if (this.state.count == "What is patient's INR ?" && answer <= 2) {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
         return {
           question: "What is patient's AST ?",
           type: 'input',
         }
 
       }
-      else if (this.count == "What is patient's AST ?" && answer > 80) {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
+      else if (this.state.count == "What is patient's AST ?" && answer > 80) {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
         return {
           question: "Start standard doses of NAC",
           type: 'empty',
         }
       }
-      else if (this.count == "What is patient's AST ?" && answer <= 80) {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.chronicuser = true
-        this.durationofexposure = false
-        this.signOfHepaticfailure = false
+      else if (this.state.count == "What is patient's AST ?" && answer <= 80) {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.chronicuser = true
+        this.state.durationofexposure = false
+        this.state.signOfHepaticfailure = false
         return {
           question: "No further treatment is required and no NAC is needed.",
           type: 'empty',
         }
       }
     }
-    else if (this.chronicuser == true && this.durationofexposure == false && this.signOfHepaticfailure == false) {
-      if (this.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && this.checkTemp == false) {
-        this.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
-        this.checkTemp = true
+    else if (this.state.chronicuser == true && this.state.durationofexposure == false && this.state.signOfHepaticfailure == false) {
+      if (this.state.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && this.state.checkTemp == false) {
+        this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+        this.state.checkTemp = true
         return {
           question: "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?",
           type: 'checkbox',
           answer: ['yes', 'no']
         }
       }
-      if (this.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && answer == "yes") {
-        this.count = "Is the exact daily dose known?"
+      if (this.state.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && answer == "yes") {
+        this.state.count = "Is the exact daily dose known?"
         return {
           question: "Is the exact daily dose known?",
           type: 'checkbox',
           answer: ['yes', 'no']
         }
       }
-      else if (this.count == "Is the exact daily dose known?" && answer == "yes") {
-        this.count = "how many miligrams of acetaminophen is ingested daily?"
+      else if (this.state.count == "Is the exact daily dose known?" && answer == "yes") {
+        this.state.count = "how many miligrams of acetaminophen is ingested daily?"
         return {
           question: "how many miligrams of acetaminophen is ingested daily?",
           type: 'input',
         }
       }
-      else if (this.count == "how many miligrams of acetaminophen is ingested daily?") {
-        this.count = "how many miligrams of acetaminophen is ingested daily?"
+      else if (this.state.count == "how many miligrams of acetaminophen is ingested daily?") {
+        this.state.count = "how many miligrams of acetaminophen is ingested daily?"
         if (answer <= 4000) {
-          this.count = "Is there any signs of hepatic failure?"
-          this.chronicuser = false
-          this.signOfHepaticfailure = true
-          this.durationofexposure = false
+          this.state.count = "Is there any signs of hepatic failure?"
+          this.state.chronicuser = false
+          this.state.signOfHepaticfailure = true
+          this.state.durationofexposure = false
           return {
             question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
           }
         }
         else {
-          this.count = "Does the patient have any of these signs: nausea/vomiting/abdominal pain?"
+          this.state.count = "Does the patient have any of these signs: nausea/vomiting/abdominal pain?"
           return {
             question: "Does the patient have any of these signs: nausea/vomiting/abdominal pain?",
             type: 'checkbox',
@@ -1000,42 +1068,42 @@ export class QuestionService {
           }
         }
       }
-      else if (this.count == "Does the patient have any of these signs: nausea/vomiting/abdominal pain?" && answer == "no") {
-        this.count = "Is there any signs of hepatic failure?"
-        this.chronicuser = false
-        this.signOfHepaticfailure = true
-        this.durationofexposure = false
+      else if (this.state.count == "Does the patient have any of these signs: nausea/vomiting/abdominal pain?" && answer == "no") {
+        this.state.count = "Is there any signs of hepatic failure?"
+        this.state.chronicuser = false
+        this.state.signOfHepaticfailure = true
+        this.state.durationofexposure = false
         return {
           question: "No further treatment is required and no NAC is needed.",
           type: 'empty',
         }
       }
-      else if (this.count == "Does the patient have any of these signs: nausea/vomiting/abdominal pain?" && answer == "yes") {
-        this.count = "Is there any signs of hepatic failure?"
-        this.chronicuser = false
-        this.signOfHepaticfailure = true
-        this.durationofexposure = false
+      else if (this.state.count == "Does the patient have any of these signs: nausea/vomiting/abdominal pain?" && answer == "yes") {
+        this.state.count = "Is there any signs of hepatic failure?"
+        this.state.chronicuser = false
+        this.state.signOfHepaticfailure = true
+        this.state.durationofexposure = false
         return {
           question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }
-      else if (this.count == "Is the exact daily dose known?" && answer == "no") {
-        this.count = "Is there any signs of hepatic failure?"
-        this.chronicuser = false
-        this.signOfHepaticfailure = true
-        this.durationofexposure = false
+      else if (this.state.count == "Is the exact daily dose known?" && answer == "no") {
+        this.state.count = "Is there any signs of hepatic failure?"
+        this.state.chronicuser = false
+        this.state.signOfHepaticfailure = true
+        this.state.durationofexposure = false
         return {
           question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
         }
       }
-      else if (this.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && answer == "no") {
-        console.log(this.count)
-        this.count = "Is there any signs of hepatic failure?"
-        this.chronicuser = false
-        this.signOfHepaticfailure = true
-        this.durationofexposure = false
+      else if (this.state.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && answer == "no") {
+        //console.log(this.state.count)
+        this.state.count = "Is there any signs of hepatic failure?"
+        this.state.chronicuser = false
+        this.state.signOfHepaticfailure = true
+        this.state.durationofexposure = false
         return {
           question: "Is there any signs of hepatic failure?",
           type: 'checkbox',
@@ -1044,129 +1112,129 @@ export class QuestionService {
 
       }
     }
-    else if (this.chronicuser == false && this.durationofexposure == false && this.signOfHepaticfailure == true) {
-      console.log("hello from outside 2")
-      console.log(this.checkTemp, this.complexCount)
-      if (this.alertCheck >= 1) {
+    else if (this.state.chronicuser == false && this.state.durationofexposure == false && this.state.signOfHepaticfailure == true) {
+      //console.log("hello from outside 2")
+      //console.log(this.state.checkTemp, this.state.complexCount)
+      if (this.state.alertCheck >= 1) {
         return {
           question: "done"
         }
       }
 
-      if (this.count == "Is there any signs of hepatic failure?" && this.checkTemp == true) {
-        this.count = "Is there any signs of hepatic failure?"
-        this.checkTemp = false
+      if (this.state.count == "Is there any signs of hepatic failure?" && this.state.checkTemp == true) {
+        this.state.count = "Is there any signs of hepatic failure?"
+        this.state.checkTemp = false
         return {
           question: "Is there any signs of hepatic failure?",
           type: 'checkbox',
           answer: ['yes', 'no']
         }
       }
-      if (this.alertCheck >= 8) {
+      if (this.state.alertCheck >= 8) {
         return {
           question: "done"
         }
       }
 
-      if (this.complexCount >8 && this.alertCheck < 1) {
-        this.alertCheck = 1
-        console.log("hello from outside 1", this.alertCheck)
-        console.log(this.measuredPT == "yes", this.patientsptvalue != null)
-        if (this.measuredPT == "yes" && this.patientsptvalue > 100) {
-          this.measuredPT == "no"
+      if (this.state.complexCount > 8 && this.state.alertCheck < 1) {
+        this.state.alertCheck = 1
+        //console.log("hello from outside 1", this.state.alertCheck)
+        //console.log(this.state.measuredPT == "yes", this.state.patientsptvalue != null)
+        if (this.state.measuredPT == "yes" && this.state.patientsptvalue > 100) {
+          this.state.measuredPT == "no"
           alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
         }
         else {
           alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended")
-          this.measuredPT == "no"
+          this.state.measuredPT == "no"
         }
 
 
-        if (this.arterialPh == "yes" && this.patientsarterialvalue < 7.3) {
-          this.arterialPh == "no"
+        if (this.state.arterialPh == "yes" && this.state.patientsarterialvalue < 7.3) {
+          this.state.arterialPh == "no"
           alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
         }
         else {
           alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended")
-          this.arterialPh == "no"
+          this.state.arterialPh == "no"
         }
 
-        if (this.measuredInr == "yes" && this.patientsinrvalue > 6.5) {
-          this.measuredInr == "no"
+        if (this.state.measuredInr == "yes" && this.state.patientsinrvalue > 6.5) {
+          this.state.measuredInr == "no"
           alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
         }
         else {
           alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended")
-          this.measuredInr == "no"
+          this.state.measuredInr == "no"
         }
 
-        if (this.measuredCreatinin == "yes" && this.patientscreatinevalue > 3.3) {
-          this.measuredCreatinin == "no"
+        if (this.state.measuredCreatinin == "yes" && this.state.patientscreatinevalue > 3.3) {
+          this.state.measuredCreatinin == "no"
           alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
         }
         else {
           alert("At this time, patient does not meet transplant or referral criteria.  Re evaluation of king colledge criteria is recommended")
-          this.measuredCreatinin == "no"
+          this.state.measuredCreatinin == "no"
         }
 
-        if (this.calculatedEncephalopathyGrade == "yes" && this.patientsencephalopathyvalue > 2) {
-          this.calculatedEncephalopathyGrade == "no"
+        if (this.state.calculatedEncephalopathyGrade == "yes" && this.state.patientsencephalopathyvalue > 2) {
+          this.state.calculatedEncephalopathyGrade == "no"
           alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
         }
         else {
           alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended ")
-          this.calculatedEncephalopathyGrade == "no"
+          this.state.calculatedEncephalopathyGrade == "no"
         }
 
-        if (this.measuredLactat4 == "yes" && this.patientslactatelevelvalue > 3.5) {
-          this.measuredLactat4 == "no"
+        if (this.state.measuredLactat4 == "yes" && this.state.patientslactatelevelvalue > 3.5) {
+          this.state.measuredLactat4 == "no"
           alert("Although hyperlactatemia is not part of King's criteria, they predict poor prognosis for survival without transplantation.")
         }
         else {
           alert("Evaluation of other criteria of king college is recommended. measuredLactat4")
-          this.measuredLactat4 == "no"
+          this.state.measuredLactat4 == "no"
         }
 
-        if (this.measuredLactat12 == "yes" && this.patientslactatelevelvalue12 > 3) {
-          this.measuredLactat12 == "no"
+        if (this.state.measuredLactat12 == "yes" && this.state.patientslactatelevelvalue12 > 3) {
+          this.state.measuredLactat12 == "no"
           alert("Although hyperlactatemia is not part of King's criteria, they predict poor prognosis for survival without transplantation.")
         }
         else {
           alert("Evaluation of other criteria of king college is recommended. measuredLactat12")
-          this.measuredLactat12 == "no"
+          this.state.measuredLactat12 == "no"
         }
 
-        if (this.measuredPhosphate48to96 == "yes" && this.patientshosphatevalue > 3.75) {
-          this.measuredPhosphate48to96 == "no"
-          alert("Although hyperlactatemia is not part of King's criteria, they predict poor prognosis for survival without transplantation. " + this.patientshosphatevalue)
+        if (this.state.measuredPhosphate48to96 == "yes" && this.state.patientshosphatevalue > 3.75) {
+          this.state.measuredPhosphate48to96 == "no"
+          alert("Although hyperlactatemia is not part of King's criteria, they predict poor prognosis for survival without transplantation. " + this.state.patientshosphatevalue)
         }
         else {
-          alert("Evaluation of other criteria of king college is recommended. measuredPhosphate48to96"+ this.patientshosphatevalue )
-          this.measuredPhosphate48to96 == "no"
+          alert("Evaluation of other criteria of king college is recommended. measuredPhosphate48to96" + this.state.patientshosphatevalue)
+          this.state.measuredPhosphate48to96 == "no"
         }
       }
 
-      if (this.count == "Is there any signs of hepatic failure?" && answer == "yes") {
-        this.count = "PT is measured?"
+      if (this.state.count == "Is there any signs of hepatic failure?" && answer == "yes") {
+        this.state.count = "PT is measured?"
         return {
           question: "PT is measured?",
           type: 'checkbox',
           answer: ['yes', 'no']
         }
       }
-      else if (this.count == "PT is measured?") {
-        this.measuredPT = answer
-        this.count = "INR is measured?"
+      else if (this.state.count == "PT is measured?") {
+        this.state.measuredPT = answer
+        this.state.count = "INR is measured?"
         return {
           question: "INR is measured?",
           type: 'checkbox',
           answer: ['yes', 'no']
         }
       }
-      else if (this.count == "INR is measured?") {
-        if (this.measuredInr == null) {
-          this.measuredInr = answer
-          this.count = "Arterial pH is measured?"
+      else if (this.state.count == "INR is measured?") {
+        if (this.state.measuredInr == null) {
+          this.state.measuredInr = answer
+          this.state.count = "Arterial pH is measured?"
           return {
             question: "Arterial pH is measured?",
             type: 'checkbox',
@@ -1174,11 +1242,11 @@ export class QuestionService {
           }
         }
         else {
-          this.complexCount = this.complexCount + 1
+          this.state.complexCount = this.state.complexCount + 1
 
-          this.count = "Creatinine level is measured ?"
-          if (this.measuredInr == "yes") {
-            this.count = "What is INR ?"
+          this.state.count = "Creatinine level is measured ?"
+          if (this.state.measuredInr == "yes") {
+            this.state.count = "What is INR ?"
             return {
               question: "What is INR ?",
               type: 'input',
@@ -1192,10 +1260,10 @@ export class QuestionService {
           }
         }
       }
-      else if (this.count == "Arterial pH is measured?") {
-        if (this.arterialPh == null) {
-          this.arterialPh = answer
-          this.count = "Creatinine level is measured ?"
+      else if (this.state.count == "Arterial pH is measured?") {
+        if (this.state.arterialPh == null) {
+          this.state.arterialPh = answer
+          this.state.count = "Creatinine level is measured ?"
           return {
             question: "Creatinine level is measured ?",
             type: 'checkbox',
@@ -1203,11 +1271,11 @@ export class QuestionService {
           }
         }
         else {
-          this.complexCount = this.complexCount + 1
+          this.state.complexCount = this.state.complexCount + 1
 
-          this.count = "INR is measured?"
-          if (this.arterialPh == "yes") {
-            this.count = "What is Arterial pH ?"
+          this.state.count = "INR is measured?"
+          if (this.state.arterialPh == "yes") {
+            this.state.count = "What is Arterial pH ?"
             return {
               question: "What is Arterial pH ?",
               type: 'input',
@@ -1221,10 +1289,10 @@ export class QuestionService {
           }
         }
       }
-      else if (this.count == "Creatinine level is measured ?") {
-        if (this.measuredCreatinin == null) {
-          this.measuredCreatinin = answer
-          this.count = "Encephalopathy Grade is evaluated?"
+      else if (this.state.count == "Creatinine level is measured ?") {
+        if (this.state.measuredCreatinin == null) {
+          this.state.measuredCreatinin = answer
+          this.state.count = "Encephalopathy Grade is evaluated?"
           return {
             question: "Encephalopathy Grade is evaluated?",
             type: 'checkbox',
@@ -1232,11 +1300,11 @@ export class QuestionService {
           }
         }
         else {
-          this.complexCount = this.complexCount + 1
+          this.state.complexCount = this.state.complexCount + 1
 
-          this.count = "Encephalopathy Grade is evaluated?"
-          if (this.measuredCreatinin == "yes") {
-            this.count = "What is creatinine value(mg/dL)?"
+          this.state.count = "Encephalopathy Grade is evaluated?"
+          if (this.state.measuredCreatinin == "yes") {
+            this.state.count = "What is creatinine value(mg/dL)?"
             return {
               question: "What is creatinine value(mg/dL)?",
               type: 'input',
@@ -1250,10 +1318,10 @@ export class QuestionService {
           }
         }
       }
-      else if (this.count == "Encephalopathy Grade is evaluated?") {
-        if (this.calculatedEncephalopathyGrade == null) {
-          this.calculatedEncephalopathyGrade = answer
-          this.count = "4h Lactate level is evaluated?"
+      else if (this.state.count == "Encephalopathy Grade is evaluated?") {
+        if (this.state.calculatedEncephalopathyGrade == null) {
+          this.state.calculatedEncephalopathyGrade = answer
+          this.state.count = "4h Lactate level is evaluated?"
           return {
             question: "4h Lactate level is evaluated?",
             type: 'checkbox',
@@ -1261,11 +1329,11 @@ export class QuestionService {
           }
         }
         else {
-          this.complexCount = this.complexCount + 1
+          this.state.complexCount = this.state.complexCount + 1
 
-          this.count = "4h Lactate level is evaluated?"
-          if (this.calculatedEncephalopathyGrade == "yes") {
-            this.count = "What is the grade of encephalopathy?"
+          this.state.count = "4h Lactate level is evaluated?"
+          if (this.state.calculatedEncephalopathyGrade == "yes") {
+            this.state.count = "What is the grade of encephalopathy?"
             return {
               question: "What is the grade of encephalopathy?",
               type: 'input',
@@ -1279,10 +1347,10 @@ export class QuestionService {
           }
         }
       }
-      else if (this.count == "4h Lactate level is evaluated?") {
-        if (this.measuredLactat4 == null) {
-          this.measuredLactat4 = answer
-          this.count = "12h Lactate level is evaluated?"
+      else if (this.state.count == "4h Lactate level is evaluated?") {
+        if (this.state.measuredLactat4 == null) {
+          this.state.measuredLactat4 = answer
+          this.state.count = "12h Lactate level is evaluated?"
           return {
             question: "12h Lactate level is evaluated?",
             type: 'checkbox',
@@ -1290,11 +1358,11 @@ export class QuestionService {
           }
         }
         else {
-          this.complexCount = this.complexCount + 1
+          this.state.complexCount = this.state.complexCount + 1
 
-          this.count = "12h Lactate level is evaluated?"
-          if (this.measuredLactat4 == "yes") {
-            this.count = "What is 4h lactate level (mmol/L) after fluid  resuscitation ?"
+          this.state.count = "12h Lactate level is evaluated?"
+          if (this.state.measuredLactat4 == "yes") {
+            this.state.count = "What is 4h lactate level (mmol/L) after fluid  resuscitation ?"
             return {
               question: "What is 4h lactate level (mmol/L) after fluid  resuscitation ?",
               type: 'input',
@@ -1308,10 +1376,10 @@ export class QuestionService {
           }
         }
       }
-      else if (this.count == "12h Lactate level is evaluated?") {
-        if (this.measuredLactat12 == null) {
-          this.measuredLactat12 = answer
-          this.count = "48-96h Phosphate level (mmol/L) is evaluated?"
+      else if (this.state.count == "12h Lactate level is evaluated?") {
+        if (this.state.measuredLactat12 == null) {
+          this.state.measuredLactat12 = answer
+          this.state.count = "48-96h Phosphate level (mmol/L) is evaluated?"
           return {
             question: "48-96h Phosphate level (mmol/L) is evaluated?",
             type: 'checkbox',
@@ -1319,11 +1387,11 @@ export class QuestionService {
           }
         }
         else {
-          this.count = "48-96h Phosphate level (mmol/L) is evaluated?"
-          this.complexCount = this.complexCount + 1
+          this.state.count = "48-96h Phosphate level (mmol/L) is evaluated?"
+          this.state.complexCount = this.state.complexCount + 1
 
-          if (this.measuredLactat12 == "yes") {
-            this.count = "What is 12h lactate level (mmol/L) after fluid  resuscitation ?"
+          if (this.state.measuredLactat12 == "yes") {
+            this.state.count = "What is 12h lactate level (mmol/L) after fluid  resuscitation ?"
             return {
               question: "What is 12h lactate level (mmol/L) after fluid  resuscitation ?",
               type: 'input',
@@ -1337,11 +1405,11 @@ export class QuestionService {
           }
         }
       }
-      else if (this.count == "48-96h Phosphate level (mmol/L) is evaluated?") {
+      else if (this.state.count == "48-96h Phosphate level (mmol/L) is evaluated?") {
         if (answer == 123456) {
-          this.complexCount = this.complexCount + 1
-          if (this.measuredPhosphate48to96 == "yes") {
-            this.count = "What is 48-96h Phosphate level (mmol/L) after fluid  resuscitation ?"
+          this.state.complexCount = this.state.complexCount + 1
+          if (this.state.measuredPhosphate48to96 == "yes") {
+            this.state.count = "What is 48-96h Phosphate level (mmol/L) after fluid  resuscitation ?"
             return {
               question: "What is 48-96h Phosphate level (mmol/L) after fluid  resuscitation ?",
               type: 'input',
@@ -1354,13 +1422,13 @@ export class QuestionService {
             }
           }
         }
-        if (this.ransomLastCheck == false) {
-          this.measuredPhosphate48to96 = answer
-          this.count = "Arterial pH is measured?"
-          this.complexCount = this.complexCount + 1
-          this.ransomLastCheck = true
-          if (this.measuredPT == "yes") {
-            this.count = "What is patient's PT ?"
+        if (this.state.ransomLastCheck == false) {
+          this.state.measuredPhosphate48to96 = answer
+          this.state.count = "Arterial pH is measured?"
+          this.state.complexCount = this.state.complexCount + 1
+          this.state.ransomLastCheck = true
+          if (this.state.measuredPT == "yes") {
+            this.state.count = "What is patient's PT ?"
             return {
               question: "What is patient's PT ?",
               type: 'input',
@@ -1374,10 +1442,10 @@ export class QuestionService {
           }
         }
         else {
-          this.count = "48-96h Phosphate level (mmol/L) is evaluated?"
-          this.complexCount = this.complexCount + 1
+          this.state.count = "48-96h Phosphate level (mmol/L) is evaluated?"
+          this.state.complexCount = this.state.complexCount + 1
 
-          if (this.measuredPhosphate48to96 == "yes") {
+          if (this.state.measuredPhosphate48to96 == "yes") {
             return {
               question: "What is 48-96h Phosphate level (mmol/L) after fluid  resuscitation ?",
               type: 'input',
@@ -1391,64 +1459,64 @@ export class QuestionService {
           }
         }
       }
-      else if (this.count == "What is patient's PT ?") {
-        this.count = "Arterial pH is measured?"
-        this.patientsptvalue = answer
+      else if (this.state.count == "What is patient's PT ?") {
+        this.state.count = "Arterial pH is measured?"
+        this.state.patientsptvalue = answer
         let abc: any = this.getQuestion(12)
         return abc
       }
-      else if (this.count == "What is Arterial pH ?") {
-        this.count = "INR is measured?"
-        console.log("1227")
-        this.patientsarterialvalue = answer
+      else if (this.state.count == "What is Arterial pH ?") {
+        this.state.count = "INR is measured?"
+        //console.log("1227")
+        this.state.patientsarterialvalue = answer
         let abc: any = this.getQuestion(12)
         return abc
       }
-      else if (this.count == "What is INR ?") {
-        this.count = "Creatinine level is measured ?"
-        this.patientsinrvalue = answer
+      else if (this.state.count == "What is INR ?") {
+        this.state.count = "Creatinine level is measured ?"
+        this.state.patientsinrvalue = answer
         let abc: any = this.getQuestion(12)
         return abc
       }
-      else if (this.count == "What is creatinine value(mg/dL)?") {
-        this.count = "Encephalopathy Grade is evaluated?"
-        this.patientscreatinevalue = answer
+      else if (this.state.count == "What is creatinine value(mg/dL)?") {
+        this.state.count = "Encephalopathy Grade is evaluated?"
+        this.state.patientscreatinevalue = answer
         let abc: any = this.getQuestion(12)
         return abc
       }
-      else if (this.count == "What is the grade of encephalopathy?") {
-        this.count = "4h Lactate level is evaluated?"
-        this.patientsencephalopathyvalue = answer
+      else if (this.state.count == "What is the grade of encephalopathy?") {
+        this.state.count = "4h Lactate level is evaluated?"
+        this.state.patientsencephalopathyvalue = answer
         let abc: any = this.getQuestion(12)
         return abc
       }
-      else if (this.count == "What is 4h lactate level (mmol/L) after fluid  resuscitation ?") {
-        this.count = "12h Lactate level is evaluated?"
-        this.patientslactatelevelvalue = answer
+      else if (this.state.count == "What is 4h lactate level (mmol/L) after fluid  resuscitation ?") {
+        this.state.count = "12h Lactate level is evaluated?"
+        this.state.patientslactatelevelvalue = answer
         let abc: any = this.getQuestion(12)
         return abc
       }
-      else if (this.count == "What is 12h lactate level (mmol/L) after fluid  resuscitation ?") {
-        this.count = "48-96h Phosphate level (mmol/L) is evaluated?"
-        this.patientslactatelevelvalue12 = answer
+      else if (this.state.count == "What is 12h lactate level (mmol/L) after fluid  resuscitation ?") {
+        this.state.count = "48-96h Phosphate level (mmol/L) is evaluated?"
+        this.state.patientslactatelevelvalue12 = answer
         let abc: any = this.getQuestion(123456)
         return abc
       }
-      else if (this.count == "What is 48-96h Phosphate level (mmol/L) after fluid  resuscitation ?") {
-        console.log(answer, "asdasda")
-        // this.count = "12h Lactate level is evaluated?"
-        this.patientshosphatevalue = answer
-        this.complexCount = 9
+      else if (this.state.count == "What is 48-96h Phosphate level (mmol/L) after fluid  resuscitation ?") {
+        //console.log(answer, "asdasda")
+        // this.state.count = "12h Lactate level is evaluated?"
+        this.state.patientshosphatevalue = answer
+        this.state.complexCount = 9
         let abc: any = this.getQuestion(12)
         return abc
       }
 
-      else if (this.count == "Is there any signs of hepatic failure?" && answer == "no") {
-        console.log(this.count)
-        this.count = "Is there any signs of hepatic failure?"
-        this.chronicuser = false
-        this.signOfHepaticfailure = false
-        this.durationofexposure = false
+      else if (this.state.count == "Is there any signs of hepatic failure?" && answer == "no") {
+        //console.log(this.state.count)
+        this.state.count = "Is there any signs of hepatic failure?"
+        this.state.chronicuser = false
+        this.state.signOfHepaticfailure = false
+        this.state.durationofexposure = false
         return {
           question: "At this time , patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended ",
           type: 'empty',

@@ -93,9 +93,9 @@ export class QuestionService {
     if(answer === undefined) {
       return this.last;
     }
-    // console.log("Wrapper called");
+    console.log("Wrapper called");
     this.state.answer = answer;
-    // console.log("Pushing", answer);
+    console.log("Pushing", answer);
     this.history.push(JSON.parse(JSON.stringify(this.state)));
     this.last =  this.getQuestion(answer);
     return this.last;
@@ -1026,6 +1026,7 @@ export class QuestionService {
       if (this.state.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && this.state.checkTemp == false) {
         this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
         this.state.checkTemp = true
+        console.log('hello')
         return {
           question: "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?",
           type: 'checkbox',
@@ -1104,6 +1105,7 @@ export class QuestionService {
         this.state.chronicuser = false
         this.state.signOfHepaticfailure = true
         this.state.durationofexposure = false
+        console.log('helloabcd')
         return {
           question: "Is there any signs of hepatic failure?",
           type: 'checkbox',

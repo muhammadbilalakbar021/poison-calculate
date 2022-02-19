@@ -12,6 +12,7 @@ export class QuestionnaireComponent implements OnInit {
   checkBox: boolean = true
   answer = false
   ended: boolean = true
+  radio = false
   constructor(public questionsService: QuestionService) { }
 
   ngOnInit(): void {
@@ -22,8 +23,14 @@ export class QuestionnaireComponent implements OnInit {
     console.log(t);
   }
 
+  radioCheck() {
+    return this.radio
+  }
+
   onNext() {
-    if(this.currentQuestion.type !== "empty" && !this.currentAnswer) {
+    // this.radio = !this.radio
+    console.log(this.currentQuestion.type, this.currentAnswer)
+    if (this.currentQuestion.type !== "empty" && !this.currentAnswer) {
       return;
     }
     let t = this.currentAnswer;
@@ -42,20 +49,26 @@ export class QuestionnaireComponent implements OnInit {
     else if (this.currentQuestion.type == "empty") {
       this.checkBox = true
     }
+    console.log('this.checked', this.checked)
 
   }
+  checked = false
 
-  onPrev(){
+  onClick() {
+    return this.checked
+  }
+
+  onPrev() {
     this.currentQuestion = this.questionsService.getPreviousQuestion();
   }
 
   saveAnswer($event: any, type: string) {
     this.currentAnswer = $event
-    if(type === "text") {
-      if(!this.currentAnswer.match(/\d+/)){
+    if (type === "text") {
+      if (!this.currentAnswer.match(/\d+/)) {
         this.currentAnswer = null;
       }
-    } else if (type === "radio"){
+    } else if (type === "radio") {
       // if(!this.currentAnswer.match());
     }
   }

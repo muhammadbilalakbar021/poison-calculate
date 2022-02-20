@@ -30,13 +30,28 @@ export class QuestionnaireComponent implements OnInit {
 
   onNext() {
     // this.radio = !this.radio
-    console.log(this.currentQuestion.type, this.currentAnswer)
+    // console.log(this.currentQuestion.type, this.currentAnswer)
     if (this.currentQuestion.type !== "empty" && !this.currentAnswer) {
       return;
     }
     let t = this.currentAnswer;
     this.currentAnswer = null;
     this.currentQuestion = this.questionsService.getQuestionWrapper(t);
+    this.renderOptions();
+
+  }
+  checked = false
+
+  onClick() {
+    return this.checked
+  }
+
+  onPrev() {
+    this.currentQuestion = this.questionsService.getPreviousQuestion();
+    this.renderOptions();
+  }
+
+  renderOptions() {
     this.reload();
     // console.log("H",this.currentQuestion, this.currentAnswer)
     if (this.currentQuestion.question == "done") {
@@ -51,17 +66,6 @@ export class QuestionnaireComponent implements OnInit {
     else if (this.currentQuestion.type == "empty") {
       this.checkBox = true
     }
-    console.log('this.checked', this.checked)
-
-  }
-  checked = false
-
-  onClick() {
-    return this.checked
-  }
-
-  onPrev() {
-    this.currentQuestion = this.questionsService.getPreviousQuestion();
   }
 
   saveAnswer($event: any, type: string) {

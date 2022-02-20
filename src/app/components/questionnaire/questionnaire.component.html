@@ -13,28 +13,31 @@
   <!-- <div class="text-start mt-5">
       <button class="btn button ml-0" routerLink="/" type="button" style="float: left">Start Again</button>
     </div> -->
-  <div *ngIf="ended" style="padding-top: 10%;" class="ml-0">
-    <h4 class="fw-bold text-center mt-3"></h4>
-    <form class=" bg-white " *ngIf="checkBox">
-      <h3 class="fw-bold">{{currentQuestion.question}}</h3>
-      <div *ngIf='render'>
-      <div class="form-check mb-2" *ngFor='let questionAnswers of currentQuestion.answer'>
-        <app-radiooptions label="{{questionAnswers}}" (click)="saveAnswer(questionAnswers, 'radio')"></app-radiooptions>
-      </div>
-      <div class="text-end">
-        <button type="button" style="float: right;" class="btn btn-primary" (click)="onNext()">Next</button>
-      </div>
+
+  <div *ngIf='render'>
+    <div *ngIf="ended" style="padding-top: 10%;" class="ml-0">
+      <h4 class="fw-bold text-center mt-3"></h4>
+      <form class=" bg-white " *ngIf="checkBox">
+        <h3 class="fw-bold">{{currentQuestion.question}}</h3>
+        <div class="form-check mb-2" *ngFor='let questionAnswers of currentQuestion.answer'>
+          <app-radiooptions label="{{questionAnswers}}" (click)="saveAnswer(questionAnswers, 'radio')">
+          </app-radiooptions>
+        </div>
+        <div class="text-end">
+          <button type="button" style="float: right;" class="btn btn-primary" (click)="onNext()">Next</button>
+        </div>
+      </form>
+      <form class=" bg-white" *ngIf="!checkBox">
+        <h3 class="fw-bold">{{currentQuestion.question}}</h3>
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="text" name="textInput" id="text" #answer />
+          <button type="button" style="float: right;" class="btn btn-primary"
+            (click)="saveAnswer(answer.value, 'text'); onNext()">Submit</button>
+        </div>
+      </form>
     </div>
-    </form>
-    <form class=" bg-white" *ngIf="!checkBox">
-      <h3 class="fw-bold">{{currentQuestion.question}}</h3>
-      <div class="form-check mb-2">
-        <input class="form-check-input" type="text" name="textInput" id="text" #answer />
-        <button type="button" style="float: right;" class="btn btn-primary"
-          (click)="saveAnswer(answer.value, 'text'); onNext()">Submit</button>
-      </div>
-    </form>
   </div>
+
   <div *ngIf="!ended" style="padding-top: 10%;" class="ml-0">
     <h4 class="fw-bold text-center mt-3"> Thank you</h4>
   </div>

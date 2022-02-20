@@ -36,7 +36,14 @@ interface Istate {
   patientslactatelevelvalue12: any,
   patientshosphatevalue: any,
   alertCheck: any,
+  type: any,
   answer: any
+}
+
+interface IReturn {
+  question: String,
+  answer: Array<String>,
+  type: String
 }
 
 @Injectable({
@@ -79,10 +86,11 @@ export class QuestionService {
     patientslactatelevelvalue12: null,
     patientshosphatevalue: null,
     alertCheck: 0,
+    type: null,
     answer: null
   }
   history: Array<Istate> = []
-  last: Object = {
+  last: IReturn = {
     question: "",
     type: "",
     answer: []
@@ -93,29 +101,34 @@ export class QuestionService {
     if(answer === undefined) {
       return this.last;
     }
-    console.log("Wrapper called");
+    // console.log("Wrapper called");
     this.state.answer = answer;
-    console.log("Pushing", answer);
+    this.state.type = this.last.type;
+    // console.log("Pushing", answer);
     this.history.push(JSON.parse(JSON.stringify(this.state)));
     this.last =  this.getQuestion(answer);
+    console.log("Question:", this.last);
     return this.last;
   }
 
   getPreviousQuestion() {
     if (this.history.length > 1) {
-    this.history.pop();
+    this.history.pop(); //Waste current state
+    console.log("Popping",this.history[this.history.length - 1]);
       this.state = this.history.pop() || this.state;
+      console.log(this.state);
       // console.log("Popped", this.state);
       // console.log("Get Previous Question:",this.state.answer);
     } else {
-      this.state = this.history[0];
+      this.state = JSON.parse(JSON.stringify(this.history[0]));
       this.history = [];
     }
+    
     return this.getQuestionWrapper(this.state.answer);
   }
 
-  getQuestion(answer: any) {
-    console.log("1S",this.state.count, answer, this.state.chronicuser, this.state.durationofexposure, this.state.signOfHepaticfailure)
+  getQuestion(answer: any) : IReturn {
+    // console.log("1S",this.state.count, answer, this.state.chronicuser, this.state.durationofexposure, this.state.signOfHepaticfailure)
     if (this.state.chronicuser == false && this.state.durationofexposure == true && this.state.signOfHepaticfailure == false) {
       if (this.state.count == null && answer == 0) {
         this.state.count = "Is the duration of acetaminophen ingestion is known ?"
@@ -162,6 +175,7 @@ export class QuestionService {
         return {
           question: "How many hours after ingestion ?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "Is the time of ingestion known ?" && this.state.Timeofing == false && answer == 'no' && this.state.durationIngestedDose == "acute single ingestion") {
@@ -197,6 +211,7 @@ export class QuestionService {
         return {
           question: "how many milligrams of acetaminophen is ingested?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "how many milligrams of acetaminophen is ingested?" && (this.state.riskbox == "no" || this.state.riskbox == "yes") && this.state.durationIngestedDose == "acute single ingestion") {
@@ -205,6 +220,7 @@ export class QuestionService {
         return {
           question: "How many kilograms is the patient ?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "How many kilograms is the patient ?" && (this.state.riskbox == "no" || this.state.riskbox == "yes") && this.state.durationIngestedDose == "acute single ingestion") {
@@ -213,6 +229,7 @@ export class QuestionService {
         return {
           question: "How old is the patient ?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "How old is the patient ?" && (this.state.riskbox == "no" || this.state.riskbox == "yes") && this.state.durationIngestedDose == "acute single ingestion") {
@@ -238,6 +255,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
+              answer: []
             }
           }
           else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
@@ -248,6 +266,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
+              answer: []
             }
           }
         }
@@ -268,6 +287,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
+              answer: []
             }
           }
           else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
@@ -278,6 +298,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
+              answer: []
             }
           }
         }
@@ -298,6 +319,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
+              answer: []
             }
           }
           else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
@@ -308,6 +330,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
+              answer: []
             }
           }
         }
@@ -328,6 +351,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
+              answer: []
             }
           }
           else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
@@ -338,6 +362,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
+              answer: []
             }
           }
         }
@@ -358,6 +383,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
+              answer: []
             }
           }
           else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
@@ -368,6 +394,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
+              answer: []
             }
           }
         }
@@ -388,6 +415,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
+              answer: []
             }
           }
           else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
@@ -398,6 +426,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
+              answer: []
             }
           }
         }
@@ -418,6 +447,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
+              answer: []
             }
           }
           else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
@@ -428,6 +458,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
+              answer: []
             }
           }
         }
@@ -448,6 +479,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
+              answer: []
             }
           }
           else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
@@ -458,6 +490,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
+              answer: []
             }
           }
         }
@@ -478,6 +511,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
+              answer: []
             }
           }
           else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
@@ -488,6 +522,7 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
+              answer: []
             }
           }
         }
@@ -508,12 +543,14 @@ export class QuestionService {
             return {
               question: "Start standard doses of NAC and measure ALT,AST",
               type: 'input',
+              answer: []
             }
           }
           else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
             return {
               question: "Start standard doses of NAC and measure ALT,AST,PT,INR",
               type: 'input',
+              answer: []
             }
           }
         }
@@ -538,6 +575,7 @@ export class QuestionService {
           return {
             question: "Start standard or high doses of NAC and measure ALT,AST",
             type: 'empty',
+            answer: []
           }
         }
         else if (this.state.time == null && this.state.estimatetime == "more than 24 hours or unknown") {
@@ -548,6 +586,7 @@ export class QuestionService {
           return {
             question: "Start standard or high doses of NAC and measure ALT,AST,PT,INR",
             type: 'empty',
+            answer: []
           }
         }
       }
@@ -557,6 +596,7 @@ export class QuestionService {
         return {
           question: "What is acetaminophen level(mcg/mL)?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "What is acetaminophen level(mcg/mL)?" && this.state.rumack_nomogram == true && this.state.previousAnswer == "no") {
@@ -588,6 +628,7 @@ export class QuestionService {
           return {
             question: `The treatment threshold after ` + this.state.time + ` hours is around ` + line150 + ` ,so there is low risk of significant toxicity. Antidote adminitration is not neccessary`,
             type: 'empty',
+            answer: []
           }
         }
         else if (answer <= line150 && answer >= line140) {
@@ -599,6 +640,7 @@ export class QuestionService {
             question: `The treatment threshold after ` + this.state.time + ` hours is around ` +
               line150 + `, patient’s acetaminophen (` + line140 + `) is so close to the threshold, rechecking of the level is strongly recommended`,
             type: 'empty',
+            answer: []
           }
         }
         else if (answer >= line150 && answer <= line200) {
@@ -609,6 +651,7 @@ export class QuestionService {
           return {
             question: `The treatment threshold after ` + this.state.time + ` hours is around ` + line150 + `, so, NAC administration is recommended. Acute ingestion standard NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 6.25 mg/kg rate (100 mg/kg over 16 hours.`,
             type: 'empty',
+            answer: []
           }
         }
         else if (answer > line200 && answer <= line300) {
@@ -619,6 +662,7 @@ export class QuestionService {
           return {
             question: `The toxic threshold after ` + this.state.time + `hours is around ` + line200 + `, so, NAC administration is recommended. Acute ingestion standard NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 6.25 mg/kg rate (100 mg/kg) over 16 hours.`,
             type: 'empty',
+            answer: []
           }
         }
         else if (answer > line300 && answer <= line450) {
@@ -630,6 +674,7 @@ export class QuestionService {
             question: `The measured APAP level is ` + this.state.time + `   the acetamiinophenlevels of higher than ` + line300 + `indicates possibility of a massive intoxication, Consider increased doses of NAC .\
             NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 12.5 mg/kg rate (200 mg/kg over 16 hours.`,
             type: 'empty',
+            answer: []
           }
         }
         else if (answer > line450 && answer <= line600) {
@@ -641,6 +686,7 @@ export class QuestionService {
           return {
             question: `The measured Acetaminophen level ` + this.state.time + `, the levels of higher than ` + line450 + `, indicates a massive intoxication, Consider increased doses of NAC .NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 18.75 mg/kg rate (200 mg/kg) over 16 hours also fomepizole can be started as a loading dose of 15 mg/kg IV, followed by 10 mg/kg IV every 12 hours for four doses (48-hour period). If indicated beyond this period, dosing is increased to 15 mg/kg every 12 hours to compensate for CYP autoinduction.`,
             type: 'empty',
+            answer: []
           }
         }
         else {
@@ -651,6 +697,7 @@ export class QuestionService {
           return {
             question: `The measured Acetaminophen level ` + answer + `, the levels of higher than ` + line600 + `, indicates  a  massive intoxication, Consider increased doses of NAC .NAC dosing can be given orally or intravenously.Intravenous dosing typically involves a 150 mg / kl bolus over 60 min followed by 12.5 mg / kg / h for 4 hours(50 mg/ kg over 4 hours) then 25 mg / kg rate(200 mg / kg) over 16 hours, in addition, consider Intermittent hemodialysis and fomepizole administration can be started as a loading dose of 15 mg / kg IV, followed by 10 mg / kg IV every 12 hours for four doses(48 - hour period).If indicated beyond this period, dosing is increased to 15 mg / kg every 12 hours to compensate for CYP autoinduction."`,
             type: 'empty',
+            answer: []
           }
         }
       }
@@ -683,6 +730,7 @@ export class QuestionService {
           return {
             question: `The treatment threshold after ` + this.state.time + ` hours is around ` + uk + `, so there is low risk of significant toxicity. Antidote adminitration is not neccessary`,
             type: 'empty',
+            answer: []
           }
         }
         else if (answer > line98 && answer < uk) {
@@ -694,6 +742,7 @@ export class QuestionService {
             question: `The treatment threshold after ` + this.state.time + ` hours is around ` +
               line150 + `, patient's acetaminophen (` + answer + `) is so close to the threshold, rechecking of the level is strongly recommended`,
             type: 'empty',
+            answer: []
           }
         }
         else if (answer >= uk && answer <= line200) {
@@ -705,6 +754,7 @@ export class QuestionService {
             question: `The treatment threshold after ` + this.state.time + ` hours is around ` + uk + `, so,the paracetamol level indicates possible toxicity , antidote administration is recomended`,
 
             type: 'empty',
+            answer: []
           }
         }
         else if (answer > line200 && answer <= line300) {
@@ -715,6 +765,7 @@ export class QuestionService {
           return {
             question: `The toxic threshold after ` + this.state.time + ` hours is around ` + line200 + `, so, NAC administration is recommended. Acute ingestion standard NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 6.25 mg/kg rate (100 mg/kg) over 16 hours.`,
             type: 'empty',
+            answer: []
           }
         }
         else if (answer > line300 && answer <= line450) {
@@ -726,6 +777,7 @@ export class QuestionService {
             question: `The measured acetaminophen level is ` + this.state.time + ` the acetamiinophenlevels of higher than ` + line300 + ` indicates possibility of a massive intoxication, Consider increased doses of NAC .\
             NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 12.5 mg/kg rate (200 mg/kg over 16 hours.`,
             type: 'empty',
+            answer: []
           }
         }
         else if (answer > line450 && answer <= line600) {
@@ -736,6 +788,7 @@ export class QuestionService {
           return {
             question: `The measured Acetaminophen level ` + this.state.time + `, the levels of higher than ` + line450 + `,  indicates a massive intoxication, Consider increased doses of NAC .NAC dosing can be given orally or intravenously. Intravenous dosing typically involves a 150 mg/kl bolus over 60 min followed by 12.5 mg/kg/h for 4 hours (50 mg/kg over 4 hours) then 18.75 mg/kg rate (200 mg/kg) over 16 hours also fomepizole can be started as a loading dose of 15 mg/kg IV, followed by 10 mg/kg IV every 12 hours for four doses (48-hour period). If indicated beyond this period, dosing is increased to 15 mg/kg every 12 hours to compensate for CYP autoinduction.`,
             type: 'empty',
+            answer: []
           }
         }
         else {
@@ -746,6 +799,7 @@ export class QuestionService {
           return {
             question: `The measured Acetaminophen level ` + answer + `, the levels of higher than ` + line600 + `, indicates  a  massive intoxication, Consider increased doses of NAC .NAC dosing can be given orally or intravenously.Intravenous dosing typically involves a 150 mg / kl bolus over 60 min followed by 12.5 mg / kg / h for 4 hours(50 mg/ kg over 4 hours) then 25 mg / kg rate(200 mg / kg) over 16 hours, in addition, consider Intermittent hemodialysis and fomepizole administration can be started as a loading dose of 15 mg / kg IV, followed by 10 mg / kg IV every 12 hours for four doses(48 - hour period).If indicated beyond this period, dosing is increased to 15 mg / kg every 12 hours to compensate for CYP autoinduction."`,
             type: 'empty',
+            answer: []
           }
         }
       }
@@ -763,6 +817,7 @@ export class QuestionService {
         return {
           question: "how many milligrams of acetaminophen is ingested?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "how many milligrams of acetaminophen is ingested?" && this.state.durationIngestedDose == "8-24 hours") {
@@ -771,6 +826,7 @@ export class QuestionService {
         return {
           question: "How many kilograms is the patient ?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "How many kilograms is the patient ?" && this.state.durationIngestedDose == "8-24 hours") {
@@ -783,12 +839,14 @@ export class QuestionService {
           return {
             question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
+            answer: []
           }
         }
         else {
           return {
             question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
             type: 'empty',
+            answer: []
           }
         }
       }
@@ -801,6 +859,7 @@ export class QuestionService {
         return {
           question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
+          answer: []
         }
       }
       else if (this.state.count == "How many hours was the duration of acetaminophen ingestion ?" && answer == "24-48 hours") {
@@ -817,6 +876,7 @@ export class QuestionService {
         return {
           question: "how many milligrams of acetaminophen is ingested?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "how many milligrams of acetaminophen is ingested?" && this.state.durationIngestedDose == "24-48 hours") {
@@ -825,6 +885,7 @@ export class QuestionService {
         return {
           question: "How many kilograms is the patient ?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "How many kilograms is the patient ?" && this.state.durationIngestedDose == "24-48 hours") {
@@ -837,12 +898,14 @@ export class QuestionService {
           return {
             question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
+            answer: []
           }
         }
         else {
           return {
             question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
             type: 'empty',
+            answer: []
           }
         }
       }
@@ -855,6 +918,7 @@ export class QuestionService {
         return {
           question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
+          answer: []
         }
       }
       else if (this.state.count == "How many hours was the duration of acetaminophen ingestion ?" && answer == "more than 48 hours") {
@@ -871,6 +935,7 @@ export class QuestionService {
         return {
           question: "how many milligrams of acetaminophen is ingested?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "how many milligrams of acetaminophen is ingested?" && this.state.durationIngestedDose == "more than 48 hours") {
@@ -879,6 +944,7 @@ export class QuestionService {
         return {
           question: "How many kilograms is the patient ?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "How many kilograms is the patient ?" && this.state.durationIngestedDose == "more than 48 hours") {
@@ -891,6 +957,7 @@ export class QuestionService {
           return {
             question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
+            answer: []
           }
         }
         else {
@@ -910,6 +977,7 @@ export class QuestionService {
         return {
           question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
+          answer: []
         }
       }
       else if (this.state.count == "Does the patient have any of these signs: nausea/vomiting/abdominal pain?" && answer == "no") {
@@ -920,6 +988,7 @@ export class QuestionService {
         return {
           question: "No further treatment is required and no NAC is needed.",
           type: 'empty',
+          answer: []
         }
       }
       else if (this.state.count == "The exact dose of ingestion is known ?" && answer == "no" && this.state.durationIngestedDose == "more than 48 hours") {
@@ -930,6 +999,7 @@ export class QuestionService {
         return {
           question: "To be continued",
           type: 'empty',
+          answer: []
         }
       }
       else if (this.state.count == "Is the duration of acetaminophen ingestion is known ?" && answer == 'no') {
@@ -937,6 +1007,7 @@ export class QuestionService {
         return {
           question: "What is acetaminophen level(mcg/mL)?",
           type: 'input',
+          answer: []
         }
 
       }
@@ -948,6 +1019,7 @@ export class QuestionService {
         return {
           question: "Start standard doses of NAC",
           type: 'empty',
+          answer: []
         }
       }
       else if (this.state.count == "What is acetaminophen level(mcg/mL)?" && answer <= 0) {
@@ -958,6 +1030,7 @@ export class QuestionService {
         return {
           question: "What is patient's PT ?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "What is patient's PT ?" && answer > 14) {
@@ -968,6 +1041,7 @@ export class QuestionService {
         return {
           question: "Start standard doses of NAC",
           type: 'empty',
+          answer: []
         }
       }
       else if (this.state.count == "What is patient's PT ?" && answer <= 14) {
@@ -978,6 +1052,7 @@ export class QuestionService {
         return {
           question: "What is patient's INR ?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "What is patient's INR ?" && answer > 2) {
@@ -988,6 +1063,7 @@ export class QuestionService {
         return {
           question: "Start standard doses of NAC",
           type: 'empty',
+          answer: []
         }
       }
       else if (this.state.count == "What is patient's INR ?" && answer <= 2) {
@@ -998,6 +1074,7 @@ export class QuestionService {
         return {
           question: "What is patient's AST ?",
           type: 'input',
+          answer: []
         }
 
       }
@@ -1009,6 +1086,7 @@ export class QuestionService {
         return {
           question: "Start standard doses of NAC",
           type: 'empty',
+          answer: []
         }
       }
       else if (this.state.count == "What is patient's AST ?" && answer <= 80) {
@@ -1019,6 +1097,7 @@ export class QuestionService {
         return {
           question: "No further treatment is required and no NAC is needed.",
           type: 'empty',
+          answer: []
         }
       }
     }
@@ -1046,6 +1125,7 @@ export class QuestionService {
         return {
           question: "how many miligrams of acetaminophen is ingested daily?",
           type: 'input',
+          answer: []
         }
       }
       else if (this.state.count == "how many miligrams of acetaminophen is ingested daily?") {
@@ -1058,6 +1138,7 @@ export class QuestionService {
           return {
             question: "No further treatment is required and no NAC is needed.",
             type: 'empty',
+            answer: []
           }
         }
         else {
@@ -1077,6 +1158,7 @@ export class QuestionService {
         return {
           question: "No further treatment is required and no NAC is needed.",
           type: 'empty',
+          answer: []
         }
       }
       else if (this.state.count == "Does the patient have any of these signs: nausea/vomiting/abdominal pain?" && answer == "yes") {
@@ -1087,6 +1169,7 @@ export class QuestionService {
         return {
           question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
+          answer: []
         }
       }
       else if (this.state.count == "Is the exact daily dose known?" && answer == "no") {
@@ -1097,6 +1180,7 @@ export class QuestionService {
         return {
           question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
           type: 'empty',
+          answer: []
         }
       }
       else if (this.state.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && answer == "no") {
@@ -1119,7 +1203,9 @@ export class QuestionService {
       //console.log(this.state.checkTemp, this.state.complexCount)
       if (this.state.alertCheck >= 1) {
         return {
-          question: "done"
+          question: "done",
+          answer: [],
+          type: ""
         }
       }
 
@@ -1134,7 +1220,9 @@ export class QuestionService {
       }
       if (this.state.alertCheck >= 8) {
         return {
-          question: "done"
+          question: "done",
+          answer: [],
+          type: ""
         }
       }
 
@@ -1252,12 +1340,14 @@ export class QuestionService {
             return {
               question: "What is INR ?",
               type: 'input',
+              answer: []
             }
           }
           else {
             return {
               question: "Measuring INR is recommended",
               type: 'empty',
+              answer: []
             }
           }
         }
@@ -1281,12 +1371,14 @@ export class QuestionService {
             return {
               question: "What is Arterial pH ?",
               type: 'input',
+              answer: []
             }
           }
           else {
             return {
               question: "arterial pH measurement is recommended",
               type: 'empty',
+              answer: []
             }
           }
         }
@@ -1310,12 +1402,14 @@ export class QuestionService {
             return {
               question: "What is creatinine value(mg/dL)?",
               type: 'input',
+              answer: []
             }
           }
           else {
             return {
               question: "Creatinine measurement is recommended",
               type: 'empty',
+              answer: []
             }
           }
         }
@@ -1339,12 +1433,14 @@ export class QuestionService {
             return {
               question: "What is the grade of encephalopathy?",
               type: 'input',
+              answer: []
             }
           }
           else {
             return {
               question: "Evaluation of encephalopathy grade is recommended",
               type: 'empty',
+              answer: []
             }
           }
         }
@@ -1368,12 +1464,14 @@ export class QuestionService {
             return {
               question: "What is 4h lactate level (mmol/L) after fluid  resuscitation ?",
               type: 'input',
+              answer: []
             }
           }
           else {
             return {
               question: "Evaluation of encephalopathy grade is recommended",
               type: 'empty',
+              answer: []
             }
           }
         }
@@ -1397,12 +1495,14 @@ export class QuestionService {
             return {
               question: "What is 12h lactate level (mmol/L) after fluid  resuscitation ?",
               type: 'input',
+              answer: []
             }
           }
           else {
             return {
               question: "Evaluation of encephalopathy grade is recommended",
               type: 'empty',
+              answer: []
             }
           }
         }
@@ -1415,12 +1515,14 @@ export class QuestionService {
             return {
               question: "What is 48-96h Phosphate level (mmol/L) after fluid  resuscitation ?",
               type: 'input',
+              answer: []
             }
           }
           else {
             return {
               question: "Phosphate level measurement at 48-96 hrs. is recommended",
               type: 'empty',
+              answer: []
             }
           }
         }
@@ -1434,12 +1536,14 @@ export class QuestionService {
             return {
               question: "What is patient's PT ?",
               type: 'input',
+              answer: []
             }
           }
           else {
             return {
               question: "Measuring PT is recommended",
               type: 'empty',
+              answer: []
             }
           }
         }
@@ -1451,12 +1555,14 @@ export class QuestionService {
             return {
               question: "What is 48-96h Phosphate level (mmol/L) after fluid  resuscitation ?",
               type: 'input',
+              answer: []
             }
           }
           else {
             return {
               question: "Phosphate level measurement at 48-96 hrs. is recommended",
               type: 'empty',
+              answer: []
             }
           }
         }
@@ -1522,12 +1628,15 @@ export class QuestionService {
         return {
           question: "At this time , patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended ",
           type: 'empty',
+          answer: []
         }
 
       }
     }
     return {
-      question: "done"
+      question: "done",
+      type: "",
+      answer: []
     }
   }
 }

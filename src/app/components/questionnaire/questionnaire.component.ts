@@ -12,7 +12,7 @@ export class QuestionnaireComponent implements OnInit {
   checkBox: boolean = true
   answer = false
   ended: boolean = true
-  radio = false
+  render = true
   constructor(public questionsService: QuestionService) { }
 
   ngOnInit(): void {
@@ -23,9 +23,10 @@ export class QuestionnaireComponent implements OnInit {
     console.log(t);
   }
 
-  radioCheck() {
-    return this.radio
-  }
+  reload() {
+    this.render = false;
+    setTimeout(() => this.render = true);  }
+
 
   onNext() {
     // this.radio = !this.radio
@@ -36,6 +37,7 @@ export class QuestionnaireComponent implements OnInit {
     let t = this.currentAnswer;
     this.currentAnswer = null;
     this.currentQuestion = this.questionsService.getQuestionWrapper(t);
+    this.reload();
     // console.log("H",this.currentQuestion, this.currentAnswer)
     if (this.currentQuestion.question == "done") {
       this.ended = false

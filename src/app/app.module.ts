@@ -12,6 +12,7 @@ import { QuestionnaireComponent } from './components/questionnaire/questionnaire
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AboutComponent } from './components/about/about.component';
+import { RadiooptionsComponent } from './components/questionnaire/radiooptions/radiooptions.component';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { AboutComponent } from './components/about/about.component';
     FooterComponent,
     QuestionnaireComponent,
     AboutComponent,
+    RadiooptionsComponent,
   ],
   imports: [
     BrowserModule,

@@ -98,7 +98,7 @@ export class QuestionService {
   constructor() { }
 
   getQuestionWrapper(answer: any) {
-    if(answer === undefined) {
+    if (answer === undefined) {
       return this.last;
     }
     // console.log("Wrapper called");
@@ -106,15 +106,15 @@ export class QuestionService {
     this.state.type = this.last.type;
     // console.log("Pushing", answer);
     this.history.push(JSON.parse(JSON.stringify(this.state)));
-    this.last =  this.getQuestion(answer);
+    this.last = this.getQuestion(answer);
     console.log("Question:", this.last);
     return this.last;
   }
 
   getPreviousQuestion() {
     if (this.history.length > 1) {
-    this.history.pop(); //Waste current state
-    console.log("Popping",this.history[this.history.length - 1]);
+      this.history.pop(); //Waste current state
+      console.log("Popping", this.history[this.history.length - 1]);
       this.state = this.history.pop() || this.state;
       console.log(this.state);
       // console.log("Popped", this.state);
@@ -123,11 +123,11 @@ export class QuestionService {
       this.state = JSON.parse(JSON.stringify(this.history[0]));
       this.history = [];
     }
-    
+
     return this.getQuestionWrapper(this.state.answer);
   }
 
-  getQuestion(answer: any) : IReturn {
+  getQuestion(answer: any): IReturn {
     // console.log("1S",this.state.count, answer, this.state.chronicuser, this.state.durationofexposure, this.state.signOfHepaticfailure)
     if (this.state.chronicuser == false && this.state.durationofexposure == true && this.state.signOfHepaticfailure == false) {
       if (this.state.count == null && answer == 0) {
@@ -1226,84 +1226,6 @@ export class QuestionService {
         }
       }
 
-      if (this.state.complexCount > 8 && this.state.alertCheck < 1) {
-        this.state.alertCheck = 1
-        //console.log("hello from outside 1", this.state.alertCheck)
-        //console.log(this.state.measuredPT == "yes", this.state.patientsptvalue != null)
-        if (this.state.measuredPT == "yes" && this.state.patientsptvalue > 100) {
-          this.state.measuredPT == "no"
-          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
-        }
-        else {
-          alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended")
-          this.state.measuredPT == "no"
-        }
-
-
-        if (this.state.arterialPh == "yes" && this.state.patientsarterialvalue < 7.3) {
-          this.state.arterialPh == "no"
-          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
-        }
-        else {
-          alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended")
-          this.state.arterialPh == "no"
-        }
-
-        if (this.state.measuredInr == "yes" && this.state.patientsinrvalue > 6.5) {
-          this.state.measuredInr == "no"
-          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
-        }
-        else {
-          alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended")
-          this.state.measuredInr == "no"
-        }
-
-        if (this.state.measuredCreatinin == "yes" && this.state.patientscreatinevalue > 3.3) {
-          this.state.measuredCreatinin == "no"
-          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
-        }
-        else {
-          alert("At this time, patient does not meet transplant or referral criteria.  Re evaluation of king colledge criteria is recommended")
-          this.state.measuredCreatinin == "no"
-        }
-
-        if (this.state.calculatedEncephalopathyGrade == "yes" && this.state.patientsencephalopathyvalue > 2) {
-          this.state.calculatedEncephalopathyGrade == "no"
-          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
-        }
-        else {
-          alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended ")
-          this.state.calculatedEncephalopathyGrade == "no"
-        }
-
-        if (this.state.measuredLactat4 == "yes" && this.state.patientslactatelevelvalue > 3.5) {
-          this.state.measuredLactat4 == "no"
-          alert("Although hyperlactatemia is not part of King's criteria, they predict poor prognosis for survival without transplantation.")
-        }
-        else {
-          alert("Evaluation of other criteria of king college is recommended. measuredLactat4")
-          this.state.measuredLactat4 == "no"
-        }
-
-        if (this.state.measuredLactat12 == "yes" && this.state.patientslactatelevelvalue12 > 3) {
-          this.state.measuredLactat12 == "no"
-          alert("Although hyperlactatemia is not part of King's criteria, they predict poor prognosis for survival without transplantation.")
-        }
-        else {
-          alert("Evaluation of other criteria of king college is recommended. measuredLactat12")
-          this.state.measuredLactat12 == "no"
-        }
-
-        if (this.state.measuredPhosphate48to96 == "yes" && this.state.patientshosphatevalue > 3.75) {
-          this.state.measuredPhosphate48to96 == "no"
-          alert("Although hyperlactatemia is not part of King's criteria, they predict poor prognosis for survival without transplantation. " + this.state.patientshosphatevalue)
-        }
-        else {
-          alert("Evaluation of other criteria of king college is recommended. measuredPhosphate48to96" + this.state.patientshosphatevalue)
-          this.state.measuredPhosphate48to96 == "no"
-        }
-      }
-
       if (this.state.count == "Is there any signs of hepatic failure?" && answer == "yes") {
         this.state.count = "PT is measured?"
         return {
@@ -1570,6 +1492,14 @@ export class QuestionService {
       else if (this.state.count == "What is patient's PT ?") {
         this.state.count = "Arterial pH is measured?"
         this.state.patientsptvalue = answer
+        if (answer > 100) {
+          this.state.measuredPT == "no"
+          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+        }
+        else {
+          alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended")
+          this.state.measuredPT == "no"
+        }
         let abc: any = this.getQuestion(12)
         return abc
       }
@@ -1577,36 +1507,84 @@ export class QuestionService {
         this.state.count = "INR is measured?"
         //console.log("1227")
         this.state.patientsarterialvalue = answer
+        if (answer < 7.3) {
+          this.state.arterialPh == "no"
+          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+        }
+        else {
+          alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended")
+          this.state.arterialPh == "no"
+        }
         let abc: any = this.getQuestion(12)
         return abc
       }
       else if (this.state.count == "What is INR ?") {
         this.state.count = "Creatinine level is measured ?"
         this.state.patientsinrvalue = answer
+        if (answer > 6.5) {
+          this.state.measuredInr == "no"
+          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+        }
+        else {
+          alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended")
+          this.state.measuredInr == "no"
+        }
         let abc: any = this.getQuestion(12)
         return abc
       }
       else if (this.state.count == "What is creatinine value(mg/dL)?") {
         this.state.count = "Encephalopathy Grade is evaluated?"
         this.state.patientscreatinevalue = answer
+        if (answer > 3.3) {
+          this.state.measuredCreatinin == "no"
+          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+        }
+        else {
+          alert("At this time, patient does not meet transplant or referral criteria.  Re evaluation of king colledge criteria is recommended")
+          this.state.measuredCreatinin == "no"
+        }
         let abc: any = this.getQuestion(12)
         return abc
       }
       else if (this.state.count == "What is the grade of encephalopathy?") {
         this.state.count = "4h Lactate level is evaluated?"
         this.state.patientsencephalopathyvalue = answer
+        if (answer > 2) {
+          this.state.calculatedEncephalopathyGrade == "no"
+          alert("In the presence of one of the following criteria, the patient needs a prompt referral / transfer to a liver transplant center: Acidosis (admission arterial pH < 7.30) OR Hepatic encephalopathy (grade III or IV), AND coagulopathy (PT > 100 s), AND acute kidney injury (creatinine > 3.3 mg/dL), OR Hyperlactatemia (4-hour lactate > 3.5 mmol/L, or 12-hour lactate > 3.0 mmol/L")
+        }
+        else {
+          alert("At this time, patient does not meet transplant or referral criteria.  Reevaluation of King's College Criteria for Acetaminophen Toxicity is recommended ")
+          this.state.calculatedEncephalopathyGrade == "no"
+        }
         let abc: any = this.getQuestion(12)
         return abc
       }
       else if (this.state.count == "What is 4h lactate level (mmol/L) after fluid  resuscitation ?") {
         this.state.count = "12h Lactate level is evaluated?"
         this.state.patientslactatelevelvalue = answer
+        if (answer > 3.5) {
+          this.state.measuredLactat4 == "no"
+          alert("Although hyperlactatemia is not part of King's criteria, they predict poor prognosis for survival without transplantation.")
+        }
+        else {
+          alert("Evaluation of other criteria of king college is recommended.")
+          this.state.measuredLactat4 == "no"
+        }
         let abc: any = this.getQuestion(12)
         return abc
       }
       else if (this.state.count == "What is 12h lactate level (mmol/L) after fluid  resuscitation ?") {
         this.state.count = "48-96h Phosphate level (mmol/L) is evaluated?"
         this.state.patientslactatelevelvalue12 = answer
+        if (answer > 3) {
+          this.state.measuredLactat12 == "no"
+          alert("Although hyperlactatemia is not part of King's criteria, they predict poor prognosis for survival without transplantation.")
+        }
+        else {
+          alert("Evaluation of other criteria of king college is recommended.")
+          this.state.measuredLactat12 == "no"
+        }
         let abc: any = this.getQuestion(123456)
         return abc
       }
@@ -1614,9 +1592,20 @@ export class QuestionService {
         //console.log(answer, "asdasda")
         // this.state.count = "12h Lactate level is evaluated?"
         this.state.patientshosphatevalue = answer
+        if (answer > 3.75) {
+          this.state.measuredPhosphate48to96 == "no"
+          alert("Although hyperlactatemia is not part of King's criteria, they predict poor prognosis for survival without transplantation.")
+        }
+        else {
+          alert("Evaluation of other criteria of king college is recommended.")
+          this.state.measuredPhosphate48to96 == "no"
+        }
         this.state.complexCount = 9
-        let abc: any = this.getQuestion(12)
-        return abc
+        return {
+          question: "done",
+          type: "",
+          answer: []
+        }
       }
 
       else if (this.state.count == "Is there any signs of hepatic failure?" && answer == "no") {

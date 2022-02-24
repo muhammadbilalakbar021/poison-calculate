@@ -238,7 +238,7 @@ export class QuestionService {
         this.state.count = "Does patient live in United Kingdom ?"
         //console.log("hello", this.state.age, this.state.weight, this.state.ingested_dose, this.state.ingested_dose / this.state.weight, this.state.time)
         if (this.state.age >= 12 && (this.state.ingested_dose / this.state.weight < 142.86 || this.state.ingested_dose < 10000)) {
-          //console.log("hello",)
+          console.log("hello", this.state.rumack_nomogram)
           if (this.state.time != null && this.state.time >= 4 && this.state.time <= 24) {
             this.state.count = "Does patient live in United Kingdom ?"
             return {
@@ -248,6 +248,8 @@ export class QuestionService {
             }
           }
           else if (this.state.time == null && this.state.estimatetime == "yes, less than 24h") {
+            console.log('this.state.ageas', this.state.rumack_nomogram)
+
             this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
             this.state.chronicuser = true
             this.state.durationofexposure = false
@@ -553,6 +555,15 @@ export class QuestionService {
               answer: []
             }
           }
+        }
+        else {
+          this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
+          this.state.chronicuser = true
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
+          this.state.checkTemp = false
+          this.state.durationofexposure = false
+          this.state.signOfHepaticfailure = false
         }
       }
       else if (this.state.count == "The exact dose of ingestion is known ?" && (this.state.riskbox == "no" || this.state.riskbox == "yes") && answer == "no" && this.state.durationIngestedDose == "acute single ingestion") {
@@ -1101,7 +1112,7 @@ export class QuestionService {
         }
       }
     }
-    else if (this.state.chronicuser == true && this.state.durationofexposure == false && this.state.signOfHepaticfailure == false) {
+    if (this.state.chronicuser == true && this.state.durationofexposure == false && this.state.signOfHepaticfailure == false) {
       if (this.state.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && this.state.checkTemp == false) {
         this.state.count = "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?"
         this.state.checkTemp = true
@@ -1177,11 +1188,6 @@ export class QuestionService {
         this.state.chronicuser = false
         this.state.signOfHepaticfailure = true
         this.state.durationofexposure = false
-        return {
-          question: "Start standard or high doses of NAC and measure serum ALT,AST,PT,INR, bicarbonat levels",
-          type: 'empty',
-          answer: []
-        }
       }
       else if (this.state.count == "Is patient a chronic acetaminophen user? (using acetaminophen for more than 24 hours?" && answer == "no") {
         //console.log(this.state.count)
@@ -1189,16 +1195,10 @@ export class QuestionService {
         this.state.chronicuser = false
         this.state.signOfHepaticfailure = true
         this.state.durationofexposure = false
-        console.log('helloabcd')
-        return {
-          question: "Is there any signs of hepatic failure?",
-          type: 'checkbox',
-          answer: ['yes', 'no']
-        }
 
       }
     }
-    else if (this.state.chronicuser == false && this.state.durationofexposure == false && this.state.signOfHepaticfailure == true) {
+    if (this.state.chronicuser == false && this.state.durationofexposure == false && this.state.signOfHepaticfailure == true) {
       //console.log("hello from outside 2")
       //console.log(this.state.checkTemp, this.state.complexCount)
       if (this.state.alertCheck >= 1) {
